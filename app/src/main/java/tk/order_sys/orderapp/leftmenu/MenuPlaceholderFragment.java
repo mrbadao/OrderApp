@@ -46,11 +46,11 @@ public class MenuPlaceholderFragment extends Fragment {
                 rootView = inflater.inflate(R.layout.menu_category_fragment, container, false);
                 break;
             case 2:
-                rootView = inflater.inflate(R.layout.menu_category_fragment, container, false);
+                rootView = inflater.inflate(R.layout.menu_favorite_fragment, container, false);
                 break;
 
             default:
-                rootView = inflater.inflate(R.layout.menu_home_fragment, container, false);
+                rootView = inflater.inflate(R.layout.menu_history_fragment, container, false);
         }
 
         return rootView;
