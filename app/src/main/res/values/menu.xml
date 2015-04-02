@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <array name="array_menu">
+        <item>Trang Chủ</item>
+        <item>Danh mục sản phẩm</item>
+        <item>Sản phẩm ưa thích</item>
+        <item>Lịch sử giao dịch</item>
+    </array>
+</resources>
