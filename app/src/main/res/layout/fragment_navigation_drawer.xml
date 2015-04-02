@@ -2,4 +2,5 @@
     xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
     android:layout_height="match_parent" android:choiceMode="singleChoice"
     android:divider="@android:color/background_dark" android:dividerHeight="0dp"
-    android:background="#2c2c2c" tools:context=".NavigationDrawerFragment" />
+    android:background="#2c2c2c" tools:context=".NavigationDrawerFragment"
+    android:paddingTop="70dp" />
