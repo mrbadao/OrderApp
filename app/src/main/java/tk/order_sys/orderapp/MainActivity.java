@@ -4,12 +4,38 @@ import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBar;
 import android.support.v4.app.FragmentManager;
 import android.os.Bundle;
+import android.text.Layout;
+import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.support.v4.widget.DrawerLayout;
+import android.view.View;
+import android.widget.Toast;
+
+import org.apache.http.HttpResponse;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicHeader;
+import org.apache.http.params.HttpConnectionParams;
+import org.apache.http.protocol.HTTP;
+import org.apache.http.util.EntityUtils;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
+import java.net.URL;
 
 import tk.order_sys.orderapp.leftmenu.MenuPlaceholderFragment;
 import tk.order_sys.orderapp.leftmenu.NavigationDrawerFragment;
+
+import static org.apache.http.protocol.HTTP.*;
 
 
 public class MainActivity extends ActionBarActivity implements NavigationDrawerFragment.NavigationDrawerCallbacks {
@@ -40,7 +66,37 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
         mNavigationDrawerFragment.setUp(
                 R.id.navigation_drawer,
                 (DrawerLayout) findViewById(R.id.drawer_layout));
+
+        try {
+            JSONObject jo = new JSONObject();
+            jo.put("secret_key", "6dn9T3t2760yypWAhdhURmz7oZQrhdXjqRoTorybjWU=");
+
+            URL url = new URL(appConfig.getApiUrl(true,"category/search"));
+
+            HttpClient httpClient = new DefaultHttpClient();
+            HttpPost httpPost = new HttpPost(url.toURI());
+
+            // Prepare JSON to send by setting the entity
+            httpPost.setEntity(new StringEntity(jo.toString(), "UTF-8"));
+
+// Set up the header types needed to properly transfer JSON
+            httpPost.setHeader("Content-Type", "application/json");
+            httpPost.setHeader("Accept-Encoding", "application/json");
+            httpPost.setHeader("Accept-Language", "en-US");
+
+// Execute POST
+            HttpResponse response = httpClient.execute(httpPost);
+            String temp = EntityUtils.toString(response.getEntity());
+            Log.i("tag", temp);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
+
     }
+
 
     @Override
     public void onNavigationDrawerItemSelected(int position) {
@@ -58,6 +114,20 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
                 break;
             }
         }
+       /* switch (number){
+            case 0;
+                this.MainMenu[0];
+                break;
+            case 1;
+                this.MainMenu[1];
+                break;
+            case 2;
+                this.MainMenu[2];
+                break;
+            case 3;
+                this.MainMenu[3];
+                break;
+        }*/
     }
 
     public void restoreActionBar() {

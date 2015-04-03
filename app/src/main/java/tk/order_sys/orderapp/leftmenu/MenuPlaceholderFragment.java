@@ -3,9 +3,11 @@ package tk.order_sys.orderapp.leftmenu;
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 import tk.order_sys.orderapp.MainActivity;
 import tk.order_sys.orderapp.R;
@@ -41,6 +43,13 @@ public class MenuPlaceholderFragment extends Fragment {
         switch (getArguments().getInt(ARG_SECTION_NUMBER)) {
             case 0:
                 rootView = inflater.inflate(R.layout.menu_home_fragment, container, false);
+                Button btn = (Button) rootView.findViewById(R.id.btn1);
+                btn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Log.i("setBtn","Click");
+                    }
+                });
                 break;
             case 1:
                 rootView = inflater.inflate(R.layout.menu_category_fragment, container, false);

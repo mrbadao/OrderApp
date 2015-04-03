@@ -19,7 +19,7 @@ class MenuAdapter extends ArrayAdapter {
     int layoutRes;
 
     String[] _menu;
-    int[] _images = {R.drawable.ic_menu_home, R.drawable.ic_action_search, R.drawable.ic_action_favorite, R.drawable.ic_menu_recent_history};
+    int[] _images = {R.drawable.ic_menu_home, R.drawable.ic_action_share, R.drawable.ic_action_favorite, R.drawable.ic_menu_recent_history};
 
 
     public MenuAdapter(Context context, int resource, Object[] objects) {
