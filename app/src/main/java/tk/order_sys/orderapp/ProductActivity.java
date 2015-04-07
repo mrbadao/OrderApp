@@ -3,6 +3,10 @@ package tk.order_sys.orderapp;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
@@ -13,6 +17,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -21,6 +26,10 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -95,6 +104,7 @@ public class ProductActivity extends ActionBarActivity {
                     listProducts.add(new ContentProduct(
                             jsonArrProduct.getString("id"),
                             jsonArrProduct.getString("name"),
+                            jsonArrProduct.getString("thumbnail"),
                             jsonArrProduct.getString("description"),
                             jsonArrProduct.getString("price"),
                             jsonArrProduct.getString("category_id"),
@@ -103,7 +113,7 @@ public class ProductActivity extends ActionBarActivity {
                     ));
                 }
 
-                lvProducts.setAdapter(new ProductsAdapter(getApplicationContext(), android.R.layout.simple_list_item_1, listProducts));
+                lvProducts.setAdapter(new ProductsAdapter(ProductActivity.this, R.layout.product_row, listProducts));
 
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -111,6 +121,7 @@ public class ProductActivity extends ActionBarActivity {
             pdia.dismiss();
         }
     }
+
 
     private class ProductsAdapter extends ArrayAdapter {
         Context context;
@@ -140,16 +151,24 @@ public class ProductActivity extends ActionBarActivity {
             LayoutInflater mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
             if (convertView == null) {
-                view = mInflater.inflate(layoutRes, parent, false);
+                view = mInflater.inflate(R.layout.product_row, parent, false);
             } else {
                 view = convertView;
             }
 
-            TextView productListItem = (TextView) view;
+            TextView productName = (TextView) view.findViewById(R.id.txtView_productTitle);
+            TextView productPrice = (TextView) view.findViewById(R.id.txtView_productPrice);
+            final ImageView productThumbnail = (ImageView) view.findViewById(R.id.productThumbnail);
 
-            productListItem.setText((CharSequence) ((ContentProduct) getItem(position)).name);
+            productName.setText((CharSequence) ((ContentProduct) getItem(position)).name);
+            productPrice.setText((CharSequence) ((ContentProduct) getItem(position)).price);
 
             return view;
         }
+
+
     }
+
+
+
 }

@@ -9,6 +9,7 @@ import android.os.Parcelable;
 public class ContentProduct implements Parcelable {
     public String id;
     public String name;
+    public String thumbnail;
     public String description;
     public String price;
     public String category_id;
@@ -19,9 +20,10 @@ public class ContentProduct implements Parcelable {
        id = name = description = price = category_id = created = modified = null;
    }
 
-   public ContentProduct(String id, String name, String description, String price, String category_id, String created, String modified){
+   public ContentProduct(String id, String name, String thumbnail, String description, String price, String category_id, String created, String modified){
        this.id = id ;
        this.name = name;
+       this.thumbnail = thumbnail;
        this.description = description;
        this.price = price;
        this.category_id = category_id;

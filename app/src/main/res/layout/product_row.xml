@@ -3,20 +3,34 @@
     android:orientation="horizontal" android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:paddingLeft="20dp"
-    android:background="?android:attr/activatedBackgroundIndicator">
+    android:weightSum="1">
 
     <ImageView
-        android:layout_width="wrap_content"
+        android:layout_width="40dp"
         android:layout_height="match_parent"
-        android:id="@+id/imageView1" />
+        android:id="@+id/productThumbnail" />
 
     <TextView
         android:gravity="center_vertical"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
+        android:layout_width="200dp"
+        android:layout_height="match_parent"
         android:layout_marginLeft="15dp"
         android:textAppearance="?android:attr/textAppearanceListItemSmall"
         android:minHeight="?android:attr/listPreferredItemHeightSmall"
-        android:id="@+id/textView1" />
+        android:id="@+id/txtView_productTitle"
+        android:text="asdasdasd"
+        android:layout_weight="0.27"
+        android:layout_gravity="left" />
+
+    <TextView
+        android:gravity="center_vertical"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:text="New Text"
+        android:id="@+id/txtView_productPrice"
+        android:layout_weight="0.10"
+        android:textAppearance="?android:attr/textAppearanceListItemSmall"
+        android:minHeight="?android:attr/listPreferredItemHeightSmall"
+        android:layout_gravity="left" />
 
 </LinearLayout>
