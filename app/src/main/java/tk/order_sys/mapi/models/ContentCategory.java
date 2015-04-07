@@ -1,9 +1,12 @@
 package tk.order_sys.mapi.models;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 /**
  * Created by HieuNguyen on 4/7/2015.
  */
-public class ContentCategory {
+public class ContentCategory implements Parcelable {
     public String id;
     public String name;
     public String abbr_cd;
@@ -22,4 +25,13 @@ public class ContentCategory {
        this.modified = modified;
    }
 
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+
+    }
 }

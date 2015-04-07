@@ -2,6 +2,7 @@ package tk.order_sys.orderapp.leftmenu.menufragment;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -23,13 +24,17 @@ import java.util.ArrayList;
 
 import tk.order_sys.mapi.API;
 import tk.order_sys.mapi.models.ContentCategory;
+import tk.order_sys.orderapp.ProductActivity;
 import tk.order_sys.orderapp.R;
 import tk.order_sys.orderapp.config.appConfig;
 
 /**
  * Created by HieuNguyen on 4/6/2015.
  */
+
 public class MenuCategoryFragment extends Fragment {
+    private static final String CATEGORY_INSTANCE_TAG = "lisCategories";
+
     View rootView;
     Context context;
     ListView lvCategory;
@@ -41,19 +46,27 @@ public class MenuCategoryFragment extends Fragment {
         rootView = inflater.inflate(R.layout.menu_category_fragment, container, false);
 
         if (appConfig.isNetworkAvailable(context)) {
-            new HTTPRequest().execute();
-            lvCategory = (ListView) rootView.findViewById(R.id.lvCategory);
-            lvCategory.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    try {
-                        Toast.makeText(getActivity().getBaseContext(), listCategory.get(position).abbr_cd, Toast.LENGTH_SHORT).show();
-                    } catch (Exception e) {
-                        e.printStackTrace();
+            try {
+                new HTTPRequest().execute();
+                lvCategory = (ListView) rootView.findViewById(R.id.lvCategory);
+                lvCategory.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                        try {
+
+                            Intent intent = new Intent(getActivity().getBaseContext(), ProductActivity.class);
+                            intent.putExtra("cat_id", listCategory.get(position).id);
+                            intent.putExtra("cat_name", listCategory.get(position).name);
+                            startActivity(intent);
+
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
                     }
-                }
-            });
-        }else {
+                });
+            }catch (Exception ex){ ex.printStackTrace(); }
+
+        } else {
             Toast.makeText(context, "Vui lòng kiểm tra kết nối Internet của bạn.", Toast.LENGTH_SHORT).show();
         }
 

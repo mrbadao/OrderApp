@@ -16,6 +16,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import android.util.Log;
 
+import tk.order_sys.orderapp.config.appConfig;
+
 /**
  * Created by HieuNguyen on 4/6/2015.
  */
@@ -23,6 +25,8 @@ public class API {
     static InputStream is = null;
     static JSONObject jObj = null;
     static String json = "";
+
+    static final String CATEGORY_API_SEARCH = "category/search";
     // constructor
 
     public API() {
@@ -32,7 +36,7 @@ public class API {
 
         StringBuilder builder = new StringBuilder();
         HttpClient client = new DefaultHttpClient();
-        HttpPost httpPost = new HttpPost("http://mapi.order-sys.tk/category/search");
+        HttpPost httpPost = new HttpPost(address);
 
         try{
             HttpResponse response = client.execute(httpPost);
@@ -61,7 +65,7 @@ public class API {
     }
 
     public static String getCategory(){
-        return getJSON("");
+        return getJSON(appConfig.getApiUrl(true) + CATEGORY_API_SEARCH);
     }
 
 }
