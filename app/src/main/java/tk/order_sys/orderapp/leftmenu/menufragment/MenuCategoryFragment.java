@@ -92,7 +92,7 @@ public class MenuCategoryFragment extends Fragment {
         protected JSONObject doInBackground(String... params) {
             JSONObject jsonObj = null;
             try {
-                jsonObj = new JSONObject(API.getCategory());
+                jsonObj = new JSONObject(API.getCategories());
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -117,7 +117,7 @@ public class MenuCategoryFragment extends Fragment {
                     ));
                 }
 
-                lvCategory = (ListView) rootView.findViewById(R.id.lvCategory);
+//                lvCategory = (ListView) rootView.findViewById(R.id.lvCategory);
                 lvCategory.setAdapter(new MenuCategoryAdapter(getActivity().getBaseContext(), android.R.layout.simple_list_item_1, listCategory));
 
             } catch (JSONException e) {
