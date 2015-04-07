@@ -16,6 +16,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -87,6 +88,7 @@ public class ProductActivity extends ActionBarActivity {
                 jsonObj = new JSONObject(API.getProducts(post_params));
             } catch (JSONException e) {
                 e.printStackTrace();
+                jsonObj = null;
             }
 
             return jsonObj;
@@ -114,6 +116,12 @@ public class ProductActivity extends ActionBarActivity {
                 }
 
                 lvProducts.setAdapter(new ProductsAdapter(ProductActivity.this, R.layout.product_row, listProducts));
+                lvProducts.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                        Toast.makeText(getApplicationContext(), listProducts.get(position).name, Toast.LENGTH_SHORT).show();
+                    }
+                });
 
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -158,10 +166,13 @@ public class ProductActivity extends ActionBarActivity {
 
             TextView productName = (TextView) view.findViewById(R.id.txtView_productTitle);
             TextView productPrice = (TextView) view.findViewById(R.id.txtView_productPrice);
-            final ImageView productThumbnail = (ImageView) view.findViewById(R.id.productThumbnail);
+            TextView productDescription = (TextView) view.findViewById(R.id.txtView_productDescription);
 
-            productName.setText((CharSequence) ((ContentProduct) getItem(position)).name);
-            productPrice.setText((CharSequence) ((ContentProduct) getItem(position)).price);
+            ContentProduct item = (ContentProduct) getItem(position);
+
+            productName.setText((CharSequence) item.name);
+            productPrice.setText((CharSequence) "Giá: " + item.price + " đồng");
+            productDescription.setText((CharSequence) item.description);
 
             return view;
         }
