@@ -57,13 +57,14 @@
         <EditText
             android:layout_width="53dp"
             android:layout_height="wrap_content"
-            android:inputType="numberDecimal"
+            android:inputType="numberSigned"
             android:ems="10"
-            android:id="@+id/quanlity"
+            android:id="@+id/quanty"
             android:layout_marginLeft="10dp"
             android:layout_marginTop="-4dp"
             android:textAlignment="gravity"
-            android:layout_gravity="right" />
+            android:gravity="center"
+            android:text="1" />
 
         <Button
             style="?android:attr/buttonStyleSmall"

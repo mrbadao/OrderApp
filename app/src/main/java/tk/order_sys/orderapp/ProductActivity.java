@@ -12,7 +12,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -179,6 +181,7 @@ public class ProductActivity extends ActionBarActivity {
             TextView productPrice = (TextView) view.findViewById(R.id.txtView_productPrice);
             ImageView productThumbnail = (ImageView) view.findViewById(R.id.productThumbnail);
             TextView productDescription = (TextView) view.findViewById(R.id.txtView_productDescription);
+            Button btnAddtoCart = (Button) view.findViewById(R.id.btnAddCart);
 
             final ContentProduct item = (ContentProduct) getItem(position);
 
@@ -191,18 +194,15 @@ public class ProductActivity extends ActionBarActivity {
             productPrice.setText((CharSequence) "Giá: " + String.format("%,d", Long.valueOf(item.price)) + " đồng");
             productDescription.setText((CharSequence) item.description);
 
-//            CheckBox chBoxAddToCart = (CheckBox) view.findViewById(R.id.btnAddCart);
+            btnAddtoCart.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    View rootView = v.getRootView();
 
-
-
-//            chBoxAddToCart.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//
-//
-//                    Toast.makeText(getApplicationContext(), item.name, Toast.LENGTH_SHORT).show();
-//                }
-//            });
+                    EditText quanty = (EditText) rootView.findViewById(R.id.quanty);
+                    Toast.makeText(getApplicationContext(), item.name, Toast.LENGTH_SHORT).show();
+                }
+            });
 
             return view;
         }
