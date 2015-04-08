@@ -10,10 +10,11 @@
     android:paddingRight="3dp">
 
     <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="206dp"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
         android:id="@+id/productThumbnail"
-        android:src="@drawable/sp01"/>
+        android:adjustViewBounds="true"
+        android:scaleType="centerInside" />
 
     <TextView
         android:layout_width="match_parent"
@@ -48,23 +49,53 @@
         android:textColor="@color/primary_dark_material_dark"
         android:textSize="14dp" />
 
-    <TextView
+    <LinearLayout
+        android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="5dp"
-        android:textAppearance="?android:attr/textAppearanceListItemSmall"
-        android:minHeight="?android:attr/listPreferredItemHeightSmall"
-        android:id="@+id/txtView_productPrice"
-        android:text="asdasdasd"
-        android:textAlignment="gravity"
-        android:textStyle="bold"
-        android:textColor="#dc0202"
-        android:outlineProvider="paddedBounds"
-        android:capitalize="sentences"
-        android:gravity="center_vertical|right"
-        android:paddingRight="3dp"
-        android:singleLine="true"
-        android:textSize="18dp"
-        android:textIsSelectable="false" />
+        android:layout_height="wrap_content">
+
+        <EditText
+            android:layout_width="53dp"
+            android:layout_height="wrap_content"
+            android:inputType="numberDecimal"
+            android:ems="10"
+            android:id="@+id/quanlity"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="-4dp"
+            android:textAlignment="gravity"
+            android:layout_gravity="right" />
+
+        <Button
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="70dp"
+            android:layout_height="31dp"
+            android:id="@+id/btnAddCart"
+            android:textSize="10dp"
+            android:textAlignment="gravity"
+            android:text="Thêm"
+            android:paddingLeft="10dp"
+            android:layout_marginLeft="3dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:textAppearance="?android:attr/textAppearanceListItemSmall"
+            android:minHeight="?android:attr/listPreferredItemHeightSmall"
+            android:id="@+id/txtView_productPrice"
+            android:text="asdasdasd"
+            android:textAlignment="gravity"
+            android:textStyle="bold"
+            android:textColor="#dc0202"
+            android:outlineProvider="paddedBounds"
+            android:capitalize="sentences"
+            android:gravity="center_vertical|right"
+            android:paddingRight="3dp"
+            android:singleLine="true"
+            android:textSize="18dp"
+            android:textIsSelectable="false"
+            android:autoText="true" />
+
+    </LinearLayout>
 
 </LinearLayout>

@@ -14,9 +14,10 @@ import tk.order_sys.orderapp.R;
  */
 public class MenuFavoriteFragment extends Fragment {
     View rootView;
+
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        rootView = inflater.inflate(R.layout.menu_favorite_fragment,container,false);
+        rootView = inflater.inflate(R.layout.menu_favorite_fragment, container, false);
         return rootView;
     }
 

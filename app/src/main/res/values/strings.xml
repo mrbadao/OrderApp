@@ -12,4 +12,5 @@
     <string name="title_activity_product">ProductActivity</string>
 
     <string name="hello_world">Hello world!</string>
+    <string name="action_cart_add">Thêm vào giỏ</string>
 </resources>

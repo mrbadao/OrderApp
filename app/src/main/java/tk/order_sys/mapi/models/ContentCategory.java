@@ -13,17 +13,17 @@ public class ContentCategory implements Parcelable {
     public String created;
     public String modified;
 
-   public ContentCategory(){
-       id = name = abbr_cd = created = modified = null;
-   }
+    public ContentCategory() {
+        id = name = abbr_cd = created = modified = null;
+    }
 
-   public ContentCategory(String id, String name, String abbr_cd, String created, String modified){
-       this.id = id ;
-       this.name = name;
-       this.abbr_cd = abbr_cd;
-       this.created = created;
-       this.modified = modified;
-   }
+    public ContentCategory(String id, String name, String abbr_cd, String created, String modified) {
+        this.id = id;
+        this.name = name;
+        this.abbr_cd = abbr_cd;
+        this.created = created;
+        this.modified = modified;
+    }
 
     @Override
     public int describeContents() {

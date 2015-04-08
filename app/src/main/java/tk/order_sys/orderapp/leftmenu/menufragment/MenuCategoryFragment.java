@@ -64,7 +64,9 @@ public class MenuCategoryFragment extends Fragment {
                         }
                     }
                 });
-            }catch (Exception ex){ ex.printStackTrace(); }
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
 
         } else {
             Toast.makeText(context, "Vui lòng kiểm tra kết nối Internet của bạn.", Toast.LENGTH_SHORT).show();
@@ -72,6 +74,7 @@ public class MenuCategoryFragment extends Fragment {
 
         return rootView;
     }
+
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
@@ -117,7 +120,6 @@ public class MenuCategoryFragment extends Fragment {
                     ));
                 }
 
-//                lvCategory = (ListView) rootView.findViewById(R.id.lvCategory);
                 lvCategory.setAdapter(new MenuCategoryAdapter(getActivity().getBaseContext(), android.R.layout.simple_list_item_1, listCategory));
 
             } catch (JSONException e) {

@@ -14,9 +14,10 @@ import tk.order_sys.orderapp.R;
  */
 public class MenuHistoryFragment extends Fragment {
     View rootView;
+
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        rootView = inflater.inflate(R.layout.menu_history_fragment,container,false);
+        rootView = inflater.inflate(R.layout.menu_history_fragment, container, false);
         return rootView;
     }
 

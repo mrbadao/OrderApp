@@ -16,20 +16,20 @@ public class ContentProduct implements Parcelable {
     public String created;
     public String modified;
 
-   public ContentProduct(){
-       id = name = description = price = category_id = created = modified = null;
-   }
+    public ContentProduct() {
+        id = name = description = price = category_id = created = modified = null;
+    }
 
-   public ContentProduct(String id, String name, String thumbnail, String description, String price, String category_id, String created, String modified){
-       this.id = id ;
-       this.name = name;
-       this.thumbnail = thumbnail;
-       this.description = description;
-       this.price = price;
-       this.category_id = category_id;
-       this.created = created;
-       this.modified = modified;
-   }
+    public ContentProduct(String id, String name, String thumbnail, String description, String price, String category_id, String created, String modified) {
+        this.id = id;
+        this.name = name;
+        this.thumbnail = thumbnail;
+        this.description = description;
+        this.price = price;
+        this.category_id = category_id;
+        this.created = created;
+        this.modified = modified;
+    }
 
     @Override
     public int describeContents() {

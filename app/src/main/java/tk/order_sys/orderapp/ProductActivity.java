@@ -2,15 +2,9 @@ package tk.order_sys.orderapp;
 
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.drawable.Drawable;
-import android.net.Uri;
 import android.os.AsyncTask;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
-import android.util.Log;
+import android.support.v7.app.ActionBarActivity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -18,24 +12,22 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.squareup.picasso.Picasso;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 
 import tk.order_sys.mapi.API;
-import tk.order_sys.mapi.models.ContentCategory;
 import tk.order_sys.mapi.models.ContentProduct;
 
 
@@ -45,6 +37,7 @@ public class ProductActivity extends ActionBarActivity {
 
     ListView lvProducts;
     private static final String PRODUCT_CATEGORY_ID_TAG = "category_id";
+    HashMap<String, String> hashCartItems = new HashMap<String, String>();
 
     ArrayList<ContentProduct> listProducts = new ArrayList<ContentProduct>();
 
@@ -64,6 +57,24 @@ public class ProductActivity extends ActionBarActivity {
         new HTTPRequest().execute();
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_product, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        if (id == R.id.action_settings) {
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
     private class HTTPRequest extends AsyncTask<String, String, JSONObject> {
         private ProgressDialog pdia;
 
@@ -79,12 +90,12 @@ public class ProductActivity extends ActionBarActivity {
             JSONObject jsonObj = null;
             HashMap<String, String> post_params = null;
 
-            if(cat_id != ""){
+            if (cat_id != "") {
                 post_params = new HashMap<String, String>();
                 post_params.put(PRODUCT_CATEGORY_ID_TAG, cat_id);
             }
 
-            try{
+            try {
                 jsonObj = new JSONObject(API.getProducts(post_params));
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -166,20 +177,38 @@ public class ProductActivity extends ActionBarActivity {
 
             TextView productName = (TextView) view.findViewById(R.id.txtView_productTitle);
             TextView productPrice = (TextView) view.findViewById(R.id.txtView_productPrice);
+            ImageView productThumbnail = (ImageView) view.findViewById(R.id.productThumbnail);
             TextView productDescription = (TextView) view.findViewById(R.id.txtView_productDescription);
 
-            ContentProduct item = (ContentProduct) getItem(position);
+            final ContentProduct item = (ContentProduct) getItem(position);
 
+            Picasso.with(getApplicationContext())
+                    .load(item.thumbnail)
+                    .into(productThumbnail);
+
+            productThumbnail.setScaleType(ImageView.ScaleType.FIT_CENTER);
             productName.setText((CharSequence) item.name);
-            productPrice.setText((CharSequence) "Giá: " + item.price + " đồng");
+            productPrice.setText((CharSequence) "Giá: " + String.format("%,d", Long.valueOf(item.price)) + " đồng");
             productDescription.setText((CharSequence) item.description);
+
+//            CheckBox chBoxAddToCart = (CheckBox) view.findViewById(R.id.btnAddCart);
+
+
+
+//            chBoxAddToCart.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//
+//
+//                    Toast.makeText(getApplicationContext(), item.name, Toast.LENGTH_SHORT).show();
+//                }
+//            });
 
             return view;
         }
 
 
     }
-
 
 
 }

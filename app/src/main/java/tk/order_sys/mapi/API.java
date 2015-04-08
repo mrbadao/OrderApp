@@ -1,13 +1,5 @@
 package tk.order_sys.mapi;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
-import java.util.HashMap;
-
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.StatusLine;
@@ -18,7 +10,12 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONException;
 import org.json.JSONObject;
-import android.util.Log;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.HashMap;
 
 import tk.order_sys.orderapp.config.appConfig;
 
@@ -38,18 +35,18 @@ public class API {
     public API() {
     }
 
-    private static String getJSON(String address, HashMap<String, String> post_data){
+    private static String getJSON(String address, HashMap<String, String> post_data) {
         StringBuilder builder = new StringBuilder();
         HttpClient client = new DefaultHttpClient();
         HttpPost httpPost = new HttpPost(address);
 
-        try{
+        try {
             JSONObject jsonPostData = new JSONObject();
-            jsonPostData.put("secret_key",SECRET_KEY);
+            jsonPostData.put("secret_key", SECRET_KEY);
 
-            if(post_data != null){
+            if (post_data != null) {
                 for (String s : post_data.keySet()) {
-                    jsonPostData.put(s,(String) post_data.get(s));
+                    jsonPostData.put(s, (String) post_data.get(s));
                 }
             }
 
@@ -63,7 +60,7 @@ public class API {
             StatusLine statusLine = response.getStatusLine();
             int statusCode = statusLine.getStatusCode();
 
-            if(statusCode == 200){
+            if (statusCode == 200) {
                 HttpEntity entity = response.getEntity();
                 InputStream content = entity.getContent();
 
@@ -71,15 +68,15 @@ public class API {
 
                 String line;
 
-                while((line = reader.readLine()) != null){
+                while ((line = reader.readLine()) != null) {
                     builder.append(line);
                 }
-            }else{
-               return null;
+            } else {
+                return null;
             }
-        }catch(ClientProtocolException e){
+        } catch (ClientProtocolException e) {
             e.printStackTrace();
-        } catch (IOException e){
+        } catch (IOException e) {
             e.printStackTrace();
         } catch (JSONException e) {
             e.printStackTrace();
@@ -87,11 +84,11 @@ public class API {
         return builder.toString();
     }
 
-    public static String getCategories(){
+    public static String getCategories() {
         return getJSON(appConfig.getApiUrl(true) + CATEGORIES_API_SEARCH, null);
     }
 
-    public static String getProducts(HashMap<String, String> params){
+    public static String getProducts(HashMap<String, String> params) {
         return getJSON(appConfig.getApiUrl(true) + PRODUCTS_API_SEARCH, params);
     }
 
