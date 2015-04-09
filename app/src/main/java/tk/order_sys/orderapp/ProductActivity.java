@@ -1,10 +1,14 @@
 package tk.order_sys.orderapp;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.app.NavUtils;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -30,7 +34,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import tk.order_sys.mapi.API;
+import tk.order_sys.mapi.httpRequest.httpRequestAddCartItems;
 import tk.order_sys.mapi.models.ContentProduct;
+import tk.order_sys.orderapp.leftmenu.menufragment.MenuCategoryFragment;
 
 
 public class ProductActivity extends ActionBarActivity {
@@ -47,6 +53,8 @@ public class ProductActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_product);
+
+//        getActionBar().setHomeAsUpIndicator(R.drawable.ic_action_previous_item);
 
         Bundle catInfo = getIntent().getExtras();
 
@@ -70,8 +78,13 @@ public class ProductActivity extends ActionBarActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
-        if (id == R.id.action_settings) {
-            return true;
+        switch (id){
+            case R.id.action_add_cart:
+                Intent data = new Intent();
+                data.putExtra("mMenuFragmentSection", 4);
+                setResult(Activity.RESULT_OK, data);
+                finish();
+                break;
         }
 
         return super.onOptionsItemSelected(item);
@@ -89,22 +102,16 @@ public class ProductActivity extends ActionBarActivity {
 
         @Override
         protected JSONObject doInBackground(String... params) {
-            JSONObject jsonObj = null;
-            HashMap<String, String> post_params = null;
-
+            JSONObject post_params = null;
             if (cat_id != "") {
-                post_params = new HashMap<String, String>();
-                post_params.put(PRODUCT_CATEGORY_ID_TAG, cat_id);
+                try {
+                    post_params =  new JSONObject();
+                    post_params.put(PRODUCT_CATEGORY_ID_TAG, cat_id);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
             }
-
-            try {
-                jsonObj = new JSONObject(API.getProducts(post_params));
-            } catch (JSONException e) {
-                e.printStackTrace();
-                jsonObj = null;
-            }
-
-            return jsonObj;
+            return API.getProducts(post_params);
         }
 
         protected void onPostExecute(JSONObject jsonObject) {
@@ -167,7 +174,7 @@ public class ProductActivity extends ActionBarActivity {
         }
 
         @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
+        public View getView(final int position, View convertView, ViewGroup parent) {
             View view = null;
             LayoutInflater mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
@@ -198,9 +205,22 @@ public class ProductActivity extends ActionBarActivity {
                 @Override
                 public void onClick(View v) {
                     View rootView = v.getRootView();
+                    EditText editTxtQuanty = (EditText) rootView.findViewById(R.id.quanty);
 
-                    EditText quanty = (EditText) rootView.findViewById(R.id.quanty);
-                    Toast.makeText(getApplicationContext(), item.name, Toast.LENGTH_SHORT).show();
+                    String quanty = String.valueOf(editTxtQuanty.getText());
+
+                    String CartItem = "{'cartItems':[{'id':'" + item.id +"', 'qty':'" + quanty +"'}]}";
+
+                    JSONObject post_data = null;
+
+                    try {
+                        post_data = new JSONObject(CartItem);
+                        Log.i("RESCART", "it look ok");
+                    }catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+                    new httpRequestAddCartItems(getApplicationContext()).execute(post_data);
                 }
             });
 

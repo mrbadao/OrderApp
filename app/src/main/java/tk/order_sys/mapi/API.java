@@ -1,5 +1,7 @@
 package tk.order_sys.mapi;
 
+import android.util.Log;
+
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.StatusLine;
@@ -27,30 +29,29 @@ public class API {
     private static JSONObject jObj = null;
     private static String json = "";
 
-    static final String CATEGORIES_API_SEARCH = "category/search";
-    static final String PRODUCTS_API_SEARCH = "product/search";
     static final String SECRET_KEY = "6dn9T3t2760yypWAhdhURmz7oZQrhdXjqRoTorybjWU=";
+
+    static final String API_CATEGORIES_SEARCH = "category/search";
+    static final String API_PRODUCTS_SEARCH = "product/search";
+    static final String API_CART_ADD_ITEM = "cart/add";
     // constructor
 
     public API() {
     }
 
-    private static String getJSON(String address, HashMap<String, String> post_data) {
+    private static JSONObject getJSON(String address, JSONObject post_data) {
         StringBuilder builder = new StringBuilder();
         HttpClient client = new DefaultHttpClient();
         HttpPost httpPost = new HttpPost(address);
 
         try {
-            JSONObject jsonPostData = new JSONObject();
-            jsonPostData.put("secret_key", SECRET_KEY);
-
-            if (post_data != null) {
-                for (String s : post_data.keySet()) {
-                    jsonPostData.put(s, (String) post_data.get(s));
-                }
+            if (post_data == null){
+                post_data = new JSONObject();
             }
 
-            StringEntity se = new StringEntity(jsonPostData.toString());
+            post_data.put("secret_key", SECRET_KEY);
+
+            StringEntity se = new StringEntity(post_data.toString());
             httpPost.setEntity(se);
 
             httpPost.setHeader("Accept", "application/json");
@@ -81,15 +82,28 @@ public class API {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        return builder.toString();
+
+        JSONObject jsonObject = null;
+        try{
+            jsonObject = new JSONObject(builder.toString());
+        }
+        catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        return jsonObject;
     }
 
-    public static String getCategories() {
-        return getJSON(appConfig.getApiUrl(true) + CATEGORIES_API_SEARCH, null);
+    public static JSONObject getCategories() {
+        return getJSON(appConfig.getApiUrl(true) + API_CATEGORIES_SEARCH, null);
     }
 
-    public static String getProducts(HashMap<String, String> params) {
-        return getJSON(appConfig.getApiUrl(true) + PRODUCTS_API_SEARCH, params);
+    public static JSONObject getProducts(JSONObject params) {
+        return getJSON(appConfig.getApiUrl(true) + API_PRODUCTS_SEARCH, params);
+    }
+
+    public static JSONObject addCartItem(JSONObject params) {
+        return getJSON(appConfig.getApiUrl(true) + API_CART_ADD_ITEM, params);
     }
 
 }

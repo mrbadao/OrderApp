@@ -1,5 +1,6 @@
 package tk.order_sys.orderapp.leftmenu.menufragment;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -34,6 +35,7 @@ import tk.order_sys.orderapp.config.appConfig;
 
 public class MenuCategoryFragment extends Fragment {
     private static final String CATEGORY_INSTANCE_TAG = "lisCategories";
+    public static final int ACTIVITY_CODE = 101;
 
     View rootView;
     Context context;
@@ -57,8 +59,7 @@ public class MenuCategoryFragment extends Fragment {
                             Intent intent = new Intent(getActivity().getBaseContext(), ProductActivity.class);
                             intent.putExtra("cat_id", listCategory.get(position).id);
                             intent.putExtra("cat_name", listCategory.get(position).name);
-                            startActivity(intent);
-
+                            getActivity().startActivityForResult(intent, ACTIVITY_CODE);
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -69,7 +70,7 @@ public class MenuCategoryFragment extends Fragment {
             }
 
         } else {
-            Toast.makeText(context, "Vui lòng kiểm tra kết nối Internet của bạn.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, R.string.error_no_connection, Toast.LENGTH_SHORT).show();
         }
 
         return rootView;
@@ -93,37 +94,34 @@ public class MenuCategoryFragment extends Fragment {
 
         @Override
         protected JSONObject doInBackground(String... params) {
-            JSONObject jsonObj = null;
-            try {
-                jsonObj = new JSONObject(API.getCategories());
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-            return jsonObj;
+            return API.getCategories();
         }
 
         protected void onPostExecute(JSONObject jsonObject) {
-            JSONArray jsonArrCategories = null;
-            try {
+            if (jsonObject != null) {
+                JSONArray jsonArrCategories = null;
+                try {
+                    jsonArrCategories = jsonObject.getJSONArray("categories");
 
-                jsonArrCategories = jsonObject.getJSONArray("categories");
-                JSONObject jsonCategory = null;
-                for (int i = 0; i < jsonArrCategories.length(); i++) {
-                    jsonCategory = jsonArrCategories.getJSONObject(i);
+                    JSONObject jsonCategory = null;
 
-                    listCategory.add(new ContentCategory(
-                            jsonCategory.getString("id"),
-                            jsonCategory.getString("name"),
-                            jsonCategory.getString("abbr_cd"),
-                            jsonCategory.getString("created"),
-                            jsonCategory.getString("modified")
-                    ));
+                    for (int i = 0; i < jsonArrCategories.length(); i++) {
+                        jsonCategory = jsonArrCategories.getJSONObject(i);
+
+                        listCategory.add(new ContentCategory(
+                                jsonCategory.getString("id"),
+                                jsonCategory.getString("name"),
+                                jsonCategory.getString("abbr_cd"),
+                                jsonCategory.getString("created"),
+                                jsonCategory.getString("modified")
+                        ));
+                    }
+
+                    lvCategory.setAdapter(new MenuCategoryAdapter(getActivity().getBaseContext(), android.R.layout.simple_list_item_1, listCategory));
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
                 }
-
-                lvCategory.setAdapter(new MenuCategoryAdapter(getActivity().getBaseContext(), android.R.layout.simple_list_item_1, listCategory));
-
-            } catch (JSONException e) {
-                e.printStackTrace();
             }
             pdia.dismiss();
         }

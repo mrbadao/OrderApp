@@ -1,5 +1,6 @@
 package tk.order_sys.orderapp;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -8,12 +9,14 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import tk.order_sys.orderapp.leftmenu.NavigationDrawerFragment;
 import tk.order_sys.orderapp.leftmenu.menufragment.MenuCategoryFragment;
 import tk.order_sys.orderapp.leftmenu.menufragment.MenuFavoriteFragment;
 import tk.order_sys.orderapp.leftmenu.menufragment.MenuHistoryFragment;
 import tk.order_sys.orderapp.leftmenu.menufragment.MenuHomeFragment;
+import tk.order_sys.orderapp.leftmenu.menufragment.MenuOrderListFragment;
 
 
 public class MainActivity extends ActionBarActivity implements NavigationDrawerFragment.NavigationDrawerCallbacks {
@@ -29,12 +32,16 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
      */
     private CharSequence mTitle;
 
+    private int mCurrentMenuFragmentSection = 0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Bundle args = new Bundle();
+        if(savedInstanceState != null){
+            mCurrentMenuFragmentSection= savedInstanceState.getInt("123");
+        }
 
 
         mNavigationDrawerFragment = (NavigationDrawerFragment)
@@ -44,15 +51,32 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
         // Get menu forom resources
         MainMenu = getResources().getStringArray(R.array.array_menu);
 
+        Toast.makeText(this, "run here", Toast.LENGTH_SHORT).show();
+
         // Set up the drawer.
         mNavigationDrawerFragment.setUp(
                 R.id.navigation_drawer,
                 (DrawerLayout) findViewById(R.id.drawer_layout));
 
-//        HttpGetter get = new HttpGetter();
-//        get.execute("http://mapi.order-sys.tk/category/searchs");
-//
+        mNavigationDrawerFragment.selectItem(mCurrentMenuFragmentSection);
+    }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode == RESULT_OK && requestCode == MenuCategoryFragment.ACTIVITY_CODE) {
+            if (data.hasExtra("mMenuFragmentSection")) {
+                mCurrentMenuFragmentSection = data.getIntExtra("mMenuFragmentSection",0);
+                Toast.makeText(this, String.valueOf(mCurrentMenuFragmentSection), Toast.LENGTH_SHORT).show();
+//                this.onNavigationDrawerItemSelected(mCurrentMenuFragmentSection);
+            }
+        }
+
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        savedInstanceState.putInt("123",4);
+        super.onRestoreInstanceState(savedInstanceState);
 
     }
 
@@ -73,8 +97,13 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
                 menuFragment = new MenuHistoryFragment();
                 mTitle = this.MainMenu[3];
                 break;
+            case 4:
+                menuFragment = new MenuOrderListFragment();
+                mTitle = this.MainMenu[4];
+                break;
             default:
                 menuFragment = new MenuHomeFragment();
+                mTitle ="Trang chủ";
                 break;
         }
 

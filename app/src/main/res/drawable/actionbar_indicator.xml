@@ -1,0 +1,9 @@
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <item
+        android:left="0dp"
+        android:right="0dp">
+        <bitmap android:src="@drawable/ic_action_previous_item" /> <!-- this is your desired image -->
+    </item>
+
+</layer-list>
