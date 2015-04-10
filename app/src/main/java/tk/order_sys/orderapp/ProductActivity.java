@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v4.app.NavUtils;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -17,7 +16,6 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -34,17 +32,19 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import tk.order_sys.mapi.API;
-import tk.order_sys.mapi.httpRequest.httpRequestAddCartItems;
 import tk.order_sys.mapi.models.ContentProduct;
-import tk.order_sys.orderapp.leftmenu.menufragment.MenuCategoryFragment;
+import tk.order_sys.orderapp.config.appConfig;
 
 
 public class ProductActivity extends ActionBarActivity {
     private String cat_name = "";
     private String cat_id = "";
 
+    private JSONArray jsonCookieStore;
+
     ListView lvProducts;
     private static final String PRODUCT_CATEGORY_ID_TAG = "category_id";
+
     HashMap<String, String> hashCartItems = new HashMap<String, String>();
 
     ArrayList<ContentProduct> listProducts = new ArrayList<ContentProduct>();
@@ -52,14 +52,25 @@ public class ProductActivity extends ActionBarActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        jsonCookieStore = null;
         setContentView(R.layout.activity_product);
 
-//        getActionBar().setHomeAsUpIndicator(R.drawable.ic_action_previous_item);
 
         Bundle catInfo = getIntent().getExtras();
 
         cat_id = (String) catInfo.get("cat_id");
         cat_name = (String) catInfo.get("cat_name");
+
+
+        if ((String) catInfo.get("jsonCookieStore") != null) {
+            try {
+                jsonCookieStore = new JSONArray(catInfo.get("jsonCookieStore").toString());
+                Log.i("CURRCOOKIE", "product" + jsonCookieStore.toString());
+            } catch (JSONException e) {
+                Log.i("CURRCOOKIE", "product");
+                e.printStackTrace();
+            }
+        }
 
         setTitle(cat_name);
         lvProducts = (ListView) findViewById(R.id.lvProducts);
@@ -78,10 +89,14 @@ public class ProductActivity extends ActionBarActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
-        switch (id){
+        switch (id) {
             case R.id.action_add_cart:
                 Intent data = new Intent();
                 data.putExtra("mMenuFragmentSection", 4);
+
+                if (jsonCookieStore != null)
+                    data.putExtra("mCookieStore", jsonCookieStore.toString());
+
                 setResult(Activity.RESULT_OK, data);
                 finish();
                 break;
@@ -105,13 +120,13 @@ public class ProductActivity extends ActionBarActivity {
             JSONObject post_params = null;
             if (cat_id != "") {
                 try {
-                    post_params =  new JSONObject();
+                    post_params = new JSONObject();
                     post_params.put(PRODUCT_CATEGORY_ID_TAG, cat_id);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
             }
-            return API.getProducts(post_params);
+            return API.getProducts(post_params, jsonCookieStore);
         }
 
         protected void onPostExecute(JSONObject jsonObject) {
@@ -143,13 +158,24 @@ public class ProductActivity extends ActionBarActivity {
                     }
                 });
 
+                Log.i("CURRCOOKIE", "product" + jsonObject.toString());
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            try {
+                JSONArray jsonArray = new JSONArray(jsonObject.get("Cookies").toString());
+
+                jsonCookieStore = jsonArray;
+
+                Log.i("CURRCOOKIE", "product httpres " + jsonCookieStore.toString());
             } catch (JSONException e) {
                 e.printStackTrace();
             }
             pdia.dismiss();
         }
     }
-
 
     private class ProductsAdapter extends ArrayAdapter {
         Context context;
@@ -209,14 +235,13 @@ public class ProductActivity extends ActionBarActivity {
 
                     String quanty = String.valueOf(editTxtQuanty.getText());
 
-                    String CartItem = "{'cartItems':[{'id':'" + item.id +"', 'qty':'" + quanty +"'}]}";
+                    String CartItem = "{'cartItems':[{'id':'" + item.id + "', 'qty':'" + quanty + "'}]}";
 
                     JSONObject post_data = null;
 
                     try {
                         post_data = new JSONObject(CartItem);
-                        Log.i("RESCART", "it look ok");
-                    }catch (JSONException e) {
+                    } catch (JSONException e) {
                         e.printStackTrace();
                     }
 
@@ -230,5 +255,47 @@ public class ProductActivity extends ActionBarActivity {
 
     }
 
+    private class httpRequestAddCartItems extends AsyncTask<JSONObject, Void, JSONObject> {
+        private Context context;
+        private ProgressDialog pdia;
+
+        public httpRequestAddCartItems(Context context) {
+            super();
+            this.context = context;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            pdia = new ProgressDialog(ProductActivity.this);
+            pdia.setMessage("Loading...");
+            pdia.show();
+        }
+
+        @Override
+        protected JSONObject doInBackground(JSONObject... params) {
+            if (appConfig.isNetworkAvailable(context)) {
+                return API.addCartItem(params[0], jsonCookieStore);
+            } else {
+                Toast.makeText(context, R.string.error_no_connection, Toast.LENGTH_SHORT).show();
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(JSONObject jsonObject) {
+            if (jsonObject != null) {
+                try {
+                    JSONArray jsonArray = new JSONArray(jsonObject.get("Cookies").toString());
+
+                    jsonCookieStore = jsonArray;
+
+                    Log.i("CURRCOOKIE", "httpRequestAddCartItems" + jsonCookieStore.toString());
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+            pdia.dismiss();
+        }
+    }
 
 }

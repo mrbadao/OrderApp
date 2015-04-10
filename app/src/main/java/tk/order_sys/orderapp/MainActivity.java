@@ -7,9 +7,12 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Toast;
+
+import org.json.JSONArray;
+import org.json.JSONException;
 
 import tk.order_sys.orderapp.leftmenu.NavigationDrawerFragment;
 import tk.order_sys.orderapp.leftmenu.menufragment.MenuCategoryFragment;
@@ -23,6 +26,7 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
 
     String[] MainMenu;
     private static final String STATE_SELECTED_POSITION = "selected_navigation_drawer_position";
+    private JSONArray jsonCookieStore;
 
     //Fragment managing the behaviors, interactions and presentation of the navigation drawer.
     private NavigationDrawerFragment mNavigationDrawerFragment;
@@ -39,8 +43,8 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        if(savedInstanceState != null){
-            mCurrentMenuFragmentSection= savedInstanceState.getInt("123");
+        if (savedInstanceState != null) {
+            mCurrentMenuFragmentSection = savedInstanceState.getInt("123");
         }
 
 
@@ -51,7 +55,7 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
         // Get menu forom resources
         MainMenu = getResources().getStringArray(R.array.array_menu);
 
-        Toast.makeText(this, "run here", Toast.LENGTH_SHORT).show();
+        jsonCookieStore = null;
 
         // Set up the drawer.
         mNavigationDrawerFragment.setUp(
@@ -65,19 +69,28 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == RESULT_OK && requestCode == MenuCategoryFragment.ACTIVITY_CODE) {
             if (data.hasExtra("mMenuFragmentSection")) {
-                mCurrentMenuFragmentSection = data.getIntExtra("mMenuFragmentSection",0);
-                Toast.makeText(this, String.valueOf(mCurrentMenuFragmentSection), Toast.LENGTH_SHORT).show();
-//                this.onNavigationDrawerItemSelected(mCurrentMenuFragmentSection);
+                mCurrentMenuFragmentSection = data.getIntExtra("mMenuFragmentSection", 0);
+            }
+
+            if (data.hasExtra("mCookieStore")) {
+                try {
+                    jsonCookieStore = new JSONArray(data.getStringExtra("mCookieStore"));
+                    Log.i("CURRCOOKIE", "main" + jsonCookieStore.toString());
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    jsonCookieStore = null;
+                }
             }
         }
 
     }
 
     @Override
-    protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        savedInstanceState.putInt("123",4);
-        super.onRestoreInstanceState(savedInstanceState);
-
+    protected void onPostResume() {
+        mNavigationDrawerFragment.selectItem(mCurrentMenuFragmentSection);
+        mTitle = MainMenu[mCurrentMenuFragmentSection];
+        restoreActionBar();
+        super.onPostResume();
     }
 
     @Override
@@ -86,7 +99,7 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
         Fragment menuFragment = null;
         switch (position) {
             case 1:
-                menuFragment = new MenuCategoryFragment();
+                menuFragment = new MenuCategoryFragment(jsonCookieStore);
                 mTitle = this.MainMenu[1];
                 break;
             case 2:
@@ -98,12 +111,12 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
                 mTitle = this.MainMenu[3];
                 break;
             case 4:
-                menuFragment = new MenuOrderListFragment();
+                menuFragment = new MenuOrderListFragment(jsonCookieStore);
                 mTitle = this.MainMenu[4];
                 break;
             default:
                 menuFragment = new MenuHomeFragment();
-                mTitle ="Trang chủ";
+                mTitle = "Trang chủ";
                 break;
         }
 
