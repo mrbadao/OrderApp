@@ -14,6 +14,7 @@ import org.json.JSONArray;
 
 import java.util.ArrayList;
 
+import tk.order_sys.mapi.models.ContentCart;
 import tk.order_sys.mapi.models.ContentCategory;
 import tk.order_sys.orderapp.R;
 
@@ -25,7 +26,7 @@ public class MenuOrderListFragment extends Fragment {
     private JSONArray jsonCookieStore;
     Context context;
     ListView lvCart;
-    ArrayList<ContentCategory> listCartItem = new ArrayList<ContentCategory>();
+    ArrayList<ContentCart> listCartItem = new ArrayList<ContentCart>();
 
     public MenuOrderListFragment(JSONArray cookiestore){
         this.jsonCookieStore = cookiestore;

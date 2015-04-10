@@ -9,20 +9,18 @@ import android.os.Parcelable;
 public class ContentCart implements Parcelable {
     public String id;
     public String name;
-    public String abbr_cd;
-    public String created;
-    public String modified;
+    public String price;
+    public String qty;
 
     public ContentCart() {
-        id = name = abbr_cd = created = modified = null;
+        id = name = price = qty = null;
     }
 
-    public ContentCart(String id, String name, String abbr_cd, String created, String modified) {
+    public ContentCart(String id, String name, String price, String qty) {
         this.id = id;
         this.name = name;
-        this.abbr_cd = abbr_cd;
-        this.created = created;
-        this.modified = modified;
+        this.price = price;
+        this.qty = qty;
     }
 
     @Override
