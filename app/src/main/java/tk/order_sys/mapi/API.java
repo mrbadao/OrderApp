@@ -40,6 +40,7 @@ public class API {
     static final String API_CATEGORIES_SEARCH = "category/search";
     static final String API_PRODUCTS_SEARCH = "product/search";
     static final String API_CART_ADD_ITEM = "cart/add";
+    static final String API_CART_GET_ITEM = "cart/getcart";
     // constructor
 
     public API() {
@@ -226,6 +227,10 @@ public class API {
 
     public static JSONObject getCategories(JSONArray jsonCookieStore) {
         return getJSON(appConfig.getApiUrl(true) + API_CATEGORIES_SEARCH, null, jsonCookieStore);
+    }
+
+    public static JSONObject getCart(JSONArray jsonCookieStore) {
+        return getJSON(appConfig.getApiUrl(true) + API_CART_GET_ITEM, null, jsonCookieStore);
     }
 
     public static JSONObject getProducts(JSONObject params, JSONArray jsonCookieStore) {
