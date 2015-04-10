@@ -1,0 +1,37 @@
+package tk.order_sys.mapi.models;
+
+import android.os.Parcel;
+import android.os.Parcelable;
+
+/**
+ * Created by HieuNguyen on 4/7/2015.
+ */
+public class ContentCart implements Parcelable {
+    public String id;
+    public String name;
+    public String abbr_cd;
+    public String created;
+    public String modified;
+
+    public ContentCart() {
+        id = name = abbr_cd = created = modified = null;
+    }
+
+    public ContentCart(String id, String name, String abbr_cd, String created, String modified) {
+        this.id = id;
+        this.name = name;
+        this.abbr_cd = abbr_cd;
+        this.created = created;
+        this.modified = modified;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+
+    }
+}
