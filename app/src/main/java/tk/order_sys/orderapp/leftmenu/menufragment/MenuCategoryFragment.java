@@ -47,6 +47,10 @@ public class MenuCategoryFragment extends Fragment {
         this.jsonCookieStore = jsonCookieStore;
     }
 
+    public MenuCategoryFragment() {
+
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         context = getActivity().getBaseContext();
@@ -54,8 +58,8 @@ public class MenuCategoryFragment extends Fragment {
 
         if (appConfig.isNetworkAvailable(context)) {
             try {
+
                 new HTTPRequest().execute();
-                lvCategory = (ListView) rootView.findViewById(R.id.lvCategory);
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
@@ -117,6 +121,7 @@ public class MenuCategoryFragment extends Fragment {
                         ));
                     }
 
+                    lvCategory = (ListView) rootView.findViewById(R.id.lvCategory);
                     lvCategory.setAdapter(new MenuCategoryAdapter(getActivity().getBaseContext(), android.R.layout.simple_list_item_1, listCategory));
 
                     lvCategory.setOnItemClickListener(new AdapterView.OnItemClickListener() {

@@ -2,7 +2,6 @@ package tk.order_sys.orderapp.leftmenu.menufragment;
 
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -11,8 +10,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import org.json.JSONArray;
@@ -23,9 +24,8 @@ import java.util.ArrayList;
 
 import tk.order_sys.mapi.API;
 import tk.order_sys.mapi.models.ContentCart;
-import tk.order_sys.mapi.models.ContentCategory;
-import tk.order_sys.orderapp.ProductActivity;
 import tk.order_sys.orderapp.R;
+import tk.order_sys.orderapp.config.appConfig;
 
 /**
  * Created by HieuNguyen on 4/6/2015.
@@ -37,15 +37,28 @@ public class MenuOrderListFragment extends Fragment {
     ListView lvCart;
     ArrayList<ContentCart> listCartItem = new ArrayList<ContentCart>();
 
-    public MenuOrderListFragment(JSONArray cookiestore){
+    public MenuOrderListFragment(JSONArray cookiestore) {
         this.jsonCookieStore = cookiestore;
+    }
+
+    public MenuOrderListFragment() {
+
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.menu_order_list_fragment, container, false);
-        if(jsonCookieStore != null)
-            Toast.makeText(getActivity().getApplicationContext(), "cookie" + jsonCookieStore.toString(), Toast.LENGTH_SHORT).show();
+        if (appConfig.isNetworkAvailable(getActivity().getBaseContext())) {
+            try {
+
+                new HTTPRequest().execute();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+
+        } else {
+            Toast.makeText(context, R.string.error_no_connection, Toast.LENGTH_SHORT).show();
+        }
         return rootView;
     }
 
@@ -61,66 +74,100 @@ public class MenuOrderListFragment extends Fragment {
 
         @Override
         protected JSONObject doInBackground(String... params) {
-            return API.getCategories(jsonCookieStore);
+            return API.getCart(jsonCookieStore);
         }
 
         protected void onPostExecute(JSONObject jsonObject) {
             if (jsonObject != null) {
-                JSONArray jsonArrCategories = null;
+                JSONArray jsonArrCart = null;
+
+                Log.i("CURRCOOKIE", "getCart1 " + jsonObject.toString());
+
                 try {
                     JSONArray jsonArray = new JSONArray(jsonObject.get("Cookies").toString());
 
                     jsonCookieStore = jsonArray;
 
-                    Log.i("CURRCOOKIE", "Category " + jsonCookieStore.toString());
+                    Log.i("CURRCOOKIE", "getCart " + jsonCookieStore.toString());
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
 
                 try {
-                    jsonArrCategories = jsonObject.getJSONArray("categories");
-                    JSONObject jsonCategory = null;
+                    jsonArrCart = jsonObject.getJSONArray("Cart");
+                    JSONObject jsonArrCartItem = null;
 
-                    for (int i = 0; i < jsonArrCategories.length(); i++) {
-                        jsonCategory = jsonArrCategories.getJSONObject(i);
+                    for (int i = 0; i < jsonArrCart.length(); i++) {
+                        jsonArrCartItem = jsonArrCart.getJSONObject(i);
 
-                        listCategory.add(new ContentCategory(
-                                jsonCategory.getString("id"),
-                                jsonCategory.getString("name"),
-                                jsonCategory.getString("abbr_cd"),
-                                jsonCategory.getString("created"),
-                                jsonCategory.getString("modified")
+                        listCartItem.add(new ContentCart(
+                                jsonArrCartItem.getString("id"),
+                                jsonArrCartItem.getString("name"),
+                                jsonArrCartItem.getString("price"),
+                                jsonArrCartItem.getString("qty")
                         ));
                     }
 
-                    lvCategory.setAdapter(new MenuCategoryAdapter(getActivity().getBaseContext(), android.R.layout.simple_list_item_1, listCategory));
+                    Log.i("Current", listCartItem.get(0).name);
+                    lvCart = (ListView) rootView.findViewById(R.id.lvCart);
+                    lvCart.setAdapter(new MenuCartAdapter(getActivity().getBaseContext(), R.layout.cart_item_row, listCartItem));
 
-                    lvCategory.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                        @Override
-                        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                            try {
-
-                                Intent intent = new Intent(getActivity().getBaseContext(), ProductActivity.class);
-
-                                intent.putExtra("cat_id", listCategory.get(position).id);
-                                intent.putExtra("cat_name", listCategory.get(position).name);
-                                if (jsonCookieStore != null) {
-                                    intent.putExtra("jsonCookieStore", jsonCookieStore.toString());
-                                    Log.i("CURRCOOKIE", "Category-p " + jsonCookieStore.toString());
-                                } else intent.putExtra("jsonCookieStore", "");
-
-                                getActivity().startActivityForResult(intent, ACTIVITY_CODE);
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    });
 
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
             }
             pdia.dismiss();
+        }
+    }
+
+    private class MenuCartAdapter extends ArrayAdapter {
+        Context context;
+        int layoutRes;
+        ArrayList<ContentCart> cartItems;
+
+        public MenuCartAdapter(Context context, int resource, ArrayList<ContentCart> objects) {
+            super(context, resource, objects);
+            this.context = context;
+            this.layoutRes = resource;
+            cartItems = objects;
+        }
+
+        @Override
+        public int getCount() {
+            return cartItems.size();
+        }
+
+        @Override
+        public Object getItem(int position) {
+            return cartItems.get(position);
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            View view = null;
+            LayoutInflater mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+
+            if (convertView == null) {
+                view = mInflater.inflate(layoutRes, parent, false);
+            } else {
+                view = convertView;
+            }
+
+            TextView itemTitle = (TextView) view.findViewById(R.id.txtView_productTitle);
+            TextView itemPrice = (TextView) view.findViewById(R.id.txtView_productPrice);
+            TextView itemTotal = (TextView) view.findViewById(R.id.txtView_product_total);
+            EditText itemQuanty = (EditText) view.findViewById(R.id.txtEdit_productQuanty);
+
+            ContentCart cartItem = (ContentCart) getItem(position);
+
+            itemTitle.setText((CharSequence) cartItem.name);
+            itemPrice.setText((CharSequence) String.format("%,d", Long.valueOf(cartItem.price)) + " đồng");
+            itemTotal.setText((CharSequence) String.format("%,d", Long.valueOf(cartItem.price) * Long.valueOf(cartItem.qty)) + " đồng");
+            itemQuanty.setText((CharSequence) cartItem.qty);
+
+
+            return view;
         }
     }
 

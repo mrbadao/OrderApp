@@ -99,7 +99,7 @@
             android:layout_height="wrap_content"
             android:inputType="numberSigned"
             android:ems="10"
-            android:id="@+id/quanty"
+            android:id="@+id/txtEdit_productQuanty"
             android:layout_marginLeft="10dp"
             android:layout_marginTop="-4dp"
             android:textAlignment="gravity"
