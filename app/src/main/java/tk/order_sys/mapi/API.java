@@ -25,7 +25,7 @@ import java.io.InputStreamReader;
 import java.util.Date;
 import java.util.List;
 
-import tk.order_sys.orderapp.config.appConfig;
+import tk.order_sys.config.appConfig;
 
 /**
  * Created by HieuNguyen on 4/6/2015.

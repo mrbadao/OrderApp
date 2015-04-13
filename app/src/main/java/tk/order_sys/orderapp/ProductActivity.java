@@ -33,7 +33,7 @@ import java.util.HashMap;
 
 import tk.order_sys.mapi.API;
 import tk.order_sys.mapi.models.ContentProduct;
-import tk.order_sys.orderapp.config.appConfig;
+import tk.order_sys.config.appConfig;
 
 
 public class ProductActivity extends ActionBarActivity {

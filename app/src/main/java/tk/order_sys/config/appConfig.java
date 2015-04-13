@@ -1,4 +1,4 @@
-package tk.order_sys.orderapp.config;
+package tk.order_sys.config;
 
 import android.content.Context;
 import android.net.ConnectivityManager;
