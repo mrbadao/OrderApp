@@ -1,4 +1,4 @@
-package tk.order_sys.orderapp.leftmenu.menufragment;
+package tk.order_sys.orderapp.Menu.Fragment;
 
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -60,7 +60,7 @@ public class MenuCategoryFragment extends Fragment {
             try {
 
                 new HTTPRequest().execute();
-            } catch (NullPointerException ex) {
+            } catch (Exception ex) {
                 ex.printStackTrace();
             }
 
@@ -71,7 +71,13 @@ public class MenuCategoryFragment extends Fragment {
         return rootView;
     }
 
-    private class HTTPRequest extends AsyncTask<Void, String, JSONObject> {
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+    }
+
+    private class HTTPRequest extends AsyncTask<String, String, JSONObject> {
         private ProgressDialog pdia;
 
         @Override
@@ -82,7 +88,7 @@ public class MenuCategoryFragment extends Fragment {
         }
 
         @Override
-        protected JSONObject doInBackground(Void... params) {
+        protected JSONObject doInBackground(String... params) {
             return API.getCategories(jsonCookieStore);
         }
 
@@ -141,7 +147,7 @@ public class MenuCategoryFragment extends Fragment {
 
                 } catch (JSONException e) {
                     e.printStackTrace();
-                } catch (NullPointerException e){
+                }catch (NullPointerException e){
                     e.printStackTrace();
                 }
             }

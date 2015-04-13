@@ -1,13 +1,62 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
-    <ListView
+    <LinearLayout
+        android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/lvCart"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
-</RelativeLayout>
+        android:layout_height="wrap_content"
+        android:weightSum="1"
+        android:layout_marginBottom="5dp">
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Đặt hàng"
+            android:id="@+id/btnCheckOut"
+            android:textAlignment="gravity"
+            android:singleLine="false"
+            android:gravity="center_vertical|left"
+            android:layout_marginLeft="5dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:textAppearance="?android:attr/textAppearanceListItemSmall"
+            android:minHeight="?android:attr/listPreferredItemHeightSmall"
+            android:id="@+id/txtView_cart_total"
+            android:text=""
+            android:textAlignment="gravity"
+            android:textStyle="bold"
+            android:textColor="#dc0202"
+            android:outlineProvider="paddedBounds"
+            android:capitalize="sentences"
+            android:gravity="center_vertical|right"
+            android:paddingRight="3dp"
+            android:singleLine="true"
+            android:textSize="18dp"
+            android:textIsSelectable="false"
+            android:autoText="true" />
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="1dp"
+        android:background="@android:color/darker_gray"/>
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ListView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/lvCart" />
+    </LinearLayout>
+
+</LinearLayout>

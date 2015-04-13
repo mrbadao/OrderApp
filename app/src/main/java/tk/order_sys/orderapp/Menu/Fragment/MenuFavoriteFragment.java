@@ -1,4 +1,4 @@
-package tk.order_sys.orderapp.leftmenu.menufragment;
+package tk.order_sys.orderapp.Menu.Fragment;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;

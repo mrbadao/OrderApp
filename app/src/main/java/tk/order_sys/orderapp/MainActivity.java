@@ -14,12 +14,12 @@ import android.view.MenuItem;
 import org.json.JSONArray;
 import org.json.JSONException;
 
-import tk.order_sys.orderapp.leftmenu.NavigationDrawerFragment;
-import tk.order_sys.orderapp.leftmenu.menufragment.MenuCategoryFragment;
-import tk.order_sys.orderapp.leftmenu.menufragment.MenuFavoriteFragment;
-import tk.order_sys.orderapp.leftmenu.menufragment.MenuHistoryFragment;
-import tk.order_sys.orderapp.leftmenu.menufragment.MenuHomeFragment;
-import tk.order_sys.orderapp.leftmenu.menufragment.MenuOrderListFragment;
+import tk.order_sys.orderapp.Menu.NavigationDrawerFragment;
+import tk.order_sys.orderapp.Menu.Fragment.MenuCategoryFragment;
+import tk.order_sys.orderapp.Menu.Fragment.MenuFavoriteFragment;
+import tk.order_sys.orderapp.Menu.Fragment.MenuHistoryFragment;
+import tk.order_sys.orderapp.Menu.Fragment.MenuHomeFragment;
+import tk.order_sys.orderapp.Menu.Fragment.MenuOrderListFragment;
 
 
 public class MainActivity extends ActionBarActivity implements NavigationDrawerFragment.NavigationDrawerCallbacks {
