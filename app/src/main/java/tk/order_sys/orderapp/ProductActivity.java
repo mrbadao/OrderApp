@@ -1,11 +1,14 @@
 package tk.order_sys.orderapp;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.app.NavUtils;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -31,9 +34,9 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import tk.order_sys.config.appConfig;
 import tk.order_sys.mapi.API;
 import tk.order_sys.mapi.models.ContentProduct;
-import tk.order_sys.config.appConfig;
 
 
 public class ProductActivity extends ActionBarActivity {
@@ -85,6 +88,7 @@ public class ProductActivity extends ActionBarActivity {
         return true;
     }
 
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
@@ -100,7 +104,16 @@ public class ProductActivity extends ActionBarActivity {
                 setResult(Activity.RESULT_OK, data);
                 finish();
                 break;
+
+            case android.R.id.home:
+                NavUtils.navigateUpFromSameTask(this);
+                return true;
         }
+
+
+
+
+
 
         return super.onOptionsItemSelected(item);
     }
