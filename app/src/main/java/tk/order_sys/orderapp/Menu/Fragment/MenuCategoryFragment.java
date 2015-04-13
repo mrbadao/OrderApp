@@ -1,4 +1,4 @@
-package tk.order_sys.orderapp.leftmenu.menufragment;
+package tk.order_sys.orderapp.Menu.Fragment;
 
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -146,6 +146,8 @@ public class MenuCategoryFragment extends Fragment {
                     });
 
                 } catch (JSONException e) {
+                    e.printStackTrace();
+                }catch (NullPointerException e){
                     e.printStackTrace();
                 }
             }

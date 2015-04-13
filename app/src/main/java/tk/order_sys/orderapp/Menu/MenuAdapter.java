@@ -2,7 +2,7 @@
  * Created by HieuNguyen on 4/2/2015.
  */
 
-package tk.order_sys.orderapp.leftmenu;
+package tk.order_sys.orderapp.Menu;
 
 import android.content.Context;
 import android.view.LayoutInflater;
