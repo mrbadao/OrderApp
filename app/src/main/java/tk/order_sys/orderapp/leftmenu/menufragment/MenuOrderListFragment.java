@@ -57,7 +57,7 @@ public class MenuOrderListFragment extends Fragment {
             }
 
         } else {
-            Toast.makeText(context, R.string.error_no_connection, Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity().getBaseContext(), R.string.error_no_connection, Toast.LENGTH_SHORT).show();
         }
         return rootView;
     }
@@ -110,10 +110,12 @@ public class MenuOrderListFragment extends Fragment {
 
                     Log.i("Current", listCartItem.get(0).name);
                     lvCart = (ListView) rootView.findViewById(R.id.lvCart);
-                    lvCart.setAdapter(new MenuCartAdapter(getActivity().getBaseContext(), R.layout.cart_item_row, listCartItem));
+                    lvCart.setAdapter(new MenuCartAdapter(getActivity().getApplicationContext(), R.layout.cart_item_row, listCartItem));
 
 
                 } catch (JSONException e) {
+                    e.printStackTrace();
+                }catch (NullPointerException e){
                     e.printStackTrace();
                 }
             }

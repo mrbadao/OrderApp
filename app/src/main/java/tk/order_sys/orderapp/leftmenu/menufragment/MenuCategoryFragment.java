@@ -60,7 +60,7 @@ public class MenuCategoryFragment extends Fragment {
             try {
 
                 new HTTPRequest().execute();
-            } catch (Exception ex) {
+            } catch (NullPointerException ex) {
                 ex.printStackTrace();
             }
 
@@ -71,13 +71,7 @@ public class MenuCategoryFragment extends Fragment {
         return rootView;
     }
 
-
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-    }
-
-    private class HTTPRequest extends AsyncTask<String, String, JSONObject> {
+    private class HTTPRequest extends AsyncTask<Void, String, JSONObject> {
         private ProgressDialog pdia;
 
         @Override
@@ -88,7 +82,7 @@ public class MenuCategoryFragment extends Fragment {
         }
 
         @Override
-        protected JSONObject doInBackground(String... params) {
+        protected JSONObject doInBackground(Void... params) {
             return API.getCategories(jsonCookieStore);
         }
 
@@ -146,6 +140,8 @@ public class MenuCategoryFragment extends Fragment {
                     });
 
                 } catch (JSONException e) {
+                    e.printStackTrace();
+                } catch (NullPointerException e){
                     e.printStackTrace();
                 }
             }

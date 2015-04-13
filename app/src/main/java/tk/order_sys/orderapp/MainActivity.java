@@ -26,6 +26,7 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
 
     String[] MainMenu;
     private static final String STATE_SELECTED_POSITION = "selected_navigation_drawer_position";
+    private static final String STATE_COOKIE = "Cart_cookie_store";
     private JSONArray jsonCookieStore;
 
     //Fragment managing the behaviors, interactions and presentation of the navigation drawer.
@@ -42,9 +43,17 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        jsonCookieStore = null;
 
         if (savedInstanceState != null) {
-            mCurrentMenuFragmentSection = savedInstanceState.getInt("123");
+            mCurrentMenuFragmentSection = savedInstanceState.getInt(STATE_SELECTED_POSITION);
+            try {
+                jsonCookieStore = new JSONArray(savedInstanceState.getString(STATE_COOKIE).toString());
+            }catch (NullPointerException e){
+                e.printStackTrace();
+            }catch (JSONException e) {
+                e.printStackTrace();
+            }
         }
 
 
@@ -55,14 +64,21 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
         // Get menu forom resources
         MainMenu = getResources().getStringArray(R.array.array_menu);
 
-        jsonCookieStore = null;
-
         // Set up the drawer.
         mNavigationDrawerFragment.setUp(
                 R.id.navigation_drawer,
                 (DrawerLayout) findViewById(R.id.drawer_layout));
 
         mNavigationDrawerFragment.selectItem(mCurrentMenuFragmentSection);
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt(STATE_SELECTED_POSITION, mCurrentMenuFragmentSection);
+        if(jsonCookieStore != null){
+            outState.putString(STATE_COOKIE, jsonCookieStore.toString());
+        }
     }
 
     @Override
@@ -87,10 +103,10 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
 
     @Override
     protected void onPostResume() {
+        super.onPostResume();
         mNavigationDrawerFragment.selectItem(mCurrentMenuFragmentSection);
         mTitle = MainMenu[mCurrentMenuFragmentSection];
         restoreActionBar();
-        super.onPostResume();
     }
 
     @Override
