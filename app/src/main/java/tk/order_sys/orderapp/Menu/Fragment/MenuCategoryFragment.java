@@ -78,56 +78,57 @@ public class MenuCategoryFragment extends Fragment implements HTTPAsyncResponse 
         if (jsonObject != null) {
             JSONArray jsonArrCategories = null;
             try {
-                JSONArray jsonArray = new JSONArray(jsonObject.get("Cookies").toString());
-
-                jsonCookieStore = jsonArray;
-
-                Log.i("CURRCOOKIE", "Category " + jsonCookieStore.toString());
+                if(!jsonObject.isNull("Cookies"))
+                {
+                    JSONArray jsonArray = new JSONArray(jsonObject.get("Cookies").toString());
+                    jsonCookieStore = jsonArray;
+                }
             } catch (JSONException e) {
                 e.printStackTrace();
             }
 
             try {
-                jsonArrCategories = jsonObject.getJSONArray("categories");
-                JSONObject jsonCategory = null;
+                if(jsonObject.isNull("categories")){
+                    jsonArrCategories = jsonObject.getJSONArray("categories");
+                    JSONObject jsonCategory = null;
 
-                for (int i = 0; i < jsonArrCategories.length(); i++) {
-                    jsonCategory = jsonArrCategories.getJSONObject(i);
+                    for (int i = 0; i < jsonArrCategories.length(); i++) {
+                        jsonCategory = jsonArrCategories.getJSONObject(i);
 
-                    listCategory.add(new ContentCategory(
-                            jsonCategory.getString("id"),
-                            jsonCategory.getString("name"),
-                            jsonCategory.getString("abbr_cd"),
-                            jsonCategory.getString("created"),
-                            jsonCategory.getString("modified")
-                    ));
-                }
-
-                lvCategory = (ListView) rootView.findViewById(R.id.lvCategory);
-                lvCategory.setAdapter(new MenuCategoryAdapter(getActivity().getBaseContext(), android.R.layout.simple_list_item_1, listCategory));
-
-
-                lvCategory.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                        try {
-
-                            Intent intent = new Intent(getActivity().getBaseContext(), ProductActivity.class);
-
-                            intent.putExtra("cat_id", listCategory.get(position).id);
-                            intent.putExtra("cat_name", listCategory.get(position).name);
-                            if (jsonCookieStore != null) {
-                                intent.putExtra("jsonCookieStore", jsonCookieStore.toString());
-                                Log.i("CURRCOOKIE", "Category-p " + jsonCookieStore.toString());
-                            } else intent.putExtra("jsonCookieStore", "");
-
-                            getActivity().startActivityForResult(intent, ACTIVITY_CODE);
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
+                        listCategory.add(new ContentCategory(
+                                jsonCategory.getString("id"),
+                                jsonCategory.getString("name"),
+                                jsonCategory.getString("abbr_cd"),
+                                jsonCategory.getString("created"),
+                                jsonCategory.getString("modified")
+                        ));
                     }
-                });
 
+                    lvCategory = (ListView) rootView.findViewById(R.id.lvCategory);
+                    lvCategory.setAdapter(new MenuCategoryAdapter(getActivity().getBaseContext(), android.R.layout.simple_list_item_1, listCategory));
+
+
+                    lvCategory.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                        @Override
+                        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                            try {
+
+                                Intent intent = new Intent(getActivity().getBaseContext(), ProductActivity.class);
+
+                                intent.putExtra("cat_id", listCategory.get(position).id);
+                                intent.putExtra("cat_name", listCategory.get(position).name);
+                                if (jsonCookieStore != null) {
+                                    intent.putExtra("jsonCookieStore", jsonCookieStore.toString());
+                                    Log.i("CURRCOOKIE", "Category-p " + jsonCookieStore.toString());
+                                } else intent.putExtra("jsonCookieStore", "");
+
+                                getActivity().startActivityForResult(intent, ACTIVITY_CODE);
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    });
+                }
             } catch (JSONException e) {
                 e.printStackTrace();
             } catch (NullPointerException e) {

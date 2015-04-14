@@ -47,6 +47,8 @@ public class ProductActivity extends ActionBarActivity {
 
     ListView lvProducts;
     private static final String PRODUCT_CATEGORY_ID_TAG = "category_id";
+    private static final String CALL_BACK_FRAGMET_TAG = "mMenuFragmentSection";
+    private static final String CALL_BACK_COOKIE_STORE_TAG = "mCookieStore";
 
     HashMap<String, String> hashCartItems = new HashMap<String, String>();
 
@@ -92,28 +94,29 @@ public class ProductActivity extends ActionBarActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
+        Intent callBackData = null;
 
         switch (id) {
             case R.id.action_add_cart:
-                Intent data = new Intent();
-                data.putExtra("mMenuFragmentSection", 4);
+                callBackData = new Intent();
+                callBackData.putExtra(CALL_BACK_FRAGMET_TAG, 4);
 
                 if (jsonCookieStore != null)
-                    data.putExtra("mCookieStore", jsonCookieStore.toString());
+                    callBackData.putExtra(CALL_BACK_COOKIE_STORE_TAG, jsonCookieStore.toString());
 
-                setResult(Activity.RESULT_OK, data);
+                setResult(Activity.RESULT_OK, callBackData);
                 finish();
                 break;
 
             case android.R.id.home:
-                NavUtils.navigateUpFromSameTask(this);
+                callBackData = new Intent();
+                callBackData.putExtra(CALL_BACK_FRAGMET_TAG, 1);
+                if (jsonCookieStore != null) callBackData.putExtra(CALL_BACK_COOKIE_STORE_TAG, jsonCookieStore.toString());
+
+                setResult(Activity.RESULT_OK, callBackData);
+                finish();
                 return true;
         }
-
-
-
-
-
 
         return super.onOptionsItemSelected(item);
     }
@@ -145,7 +148,6 @@ public class ProductActivity extends ActionBarActivity {
         protected void onPostExecute(JSONObject jsonObject) {
             JSONArray jsonArrProducts = null;
             try {
-
                 jsonArrProducts = jsonObject.getJSONArray("products");
                 JSONObject jsonArrProduct = null;
                 for (int i = 0; i < jsonArrProducts.length(); i++) {
