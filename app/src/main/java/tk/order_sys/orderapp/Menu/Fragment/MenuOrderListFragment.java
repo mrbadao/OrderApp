@@ -19,10 +19,10 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
+import tk.order_sys.HTTPRequest.getCartHttpRequest;
 import tk.order_sys.gps.GpsTracer;
 import tk.order_sys.mapi.models.ContentCart;
 import tk.order_sys.orderapp.Menu.Adapter.MenuCartAdapter;
-import tk.order_sys.HTTPRequest.HTTPRequestCart;
 import tk.order_sys.Interface.HTTPAsyncResponse;
 import tk.order_sys.orderapp.R;
 import tk.order_sys.config.appConfig;
@@ -69,7 +69,7 @@ public class MenuOrderListFragment extends Fragment implements HTTPAsyncResponse
                 });
 
                 txtViewCartTotal = (TextView) rootView.findViewById(R.id.txtView_cart_total);
-                new HTTPRequestCart(getActivity(), jsonCookieStore, this).execute();
+                new getCartHttpRequest(getActivity(), jsonCookieStore, this).execute();
 
             } catch (Exception ex) {
                 ex.printStackTrace();

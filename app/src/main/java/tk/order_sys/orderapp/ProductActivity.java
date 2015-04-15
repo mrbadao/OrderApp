@@ -34,19 +34,21 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import tk.order_sys.HTTPRequest.getProductHttpRequest;
+import tk.order_sys.Interface.HTTPAsyncResponse;
 import tk.order_sys.config.appConfig;
 import tk.order_sys.mapi.API;
 import tk.order_sys.mapi.models.ContentProduct;
 
 
-public class ProductActivity extends ActionBarActivity {
+public class ProductActivity extends ActionBarActivity implements HTTPAsyncResponse{
     private String cat_name = "";
     private String cat_id = "";
 
     private JSONArray jsonCookieStore;
 
     ListView lvProducts;
-    private static final String PRODUCT_CATEGORY_ID_TAG = "category_id";
+    
     private static final String CALL_BACK_FRAGMET_TAG = "mMenuFragmentSection";
     private static final String CALL_BACK_COOKIE_STORE_TAG = "mCookieStore";
 
@@ -60,12 +62,10 @@ public class ProductActivity extends ActionBarActivity {
         jsonCookieStore = null;
         setContentView(R.layout.activity_product);
 
-
         Bundle catInfo = getIntent().getExtras();
 
         cat_id = (String) catInfo.get("cat_id");
         cat_name = (String) catInfo.get("cat_name");
-
 
         if ((String) catInfo.get("jsonCookieStore") != null) {
             try {
@@ -80,7 +80,7 @@ public class ProductActivity extends ActionBarActivity {
         setTitle(cat_name);
         lvProducts = (ListView) findViewById(R.id.lvProducts);
 
-        new HTTPRequest().execute();
+        new getProductHttpRequest(ProductActivity.this, cat_id, jsonCookieStore, this).execute();
     }
 
     @Override
@@ -121,33 +121,14 @@ public class ProductActivity extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private class HTTPRequest extends AsyncTask<String, String, JSONObject> {
-        private ProgressDialog pdia;
-
-        @Override
-        protected void onPreExecute() {
-            pdia = new ProgressDialog(ProductActivity.this);
-            pdia.setMessage("Loading...");
-            pdia.show();
-        }
-
-        @Override
-        protected JSONObject doInBackground(String... params) {
-            JSONObject post_params = null;
-            if (cat_id != "") {
-                try {
-                    post_params = new JSONObject();
-                    post_params.put(PRODUCT_CATEGORY_ID_TAG, cat_id);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-            return API.getProducts(post_params, jsonCookieStore);
-        }
-
-        protected void onPostExecute(JSONObject jsonObject) {
-            JSONArray jsonArrProducts = null;
+    @Override
+    public void onHTTPAsyncResponse(JSONObject jsonObject) {
+        JSONArray jsonArrProducts = null;
+        if(!jsonObject.isNull("products")){
             try {
+
+
+
                 jsonArrProducts = jsonObject.getJSONArray("products");
                 JSONObject jsonArrProduct = null;
                 for (int i = 0; i < jsonArrProducts.length(); i++) {
@@ -188,9 +169,9 @@ public class ProductActivity extends ActionBarActivity {
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-            pdia.dismiss();
         }
     }
+
 
     private class ProductsAdapter extends ArrayAdapter {
         Context context;

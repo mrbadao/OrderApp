@@ -23,13 +23,13 @@ import tk.order_sys.orderapp.R;
 /**
  * Created by mrbadao on 13/04/2015.
  */
-public class HTTPRequestCategories extends AsyncTask<String, String, JSONObject> {
+public class getCategoriesHttpRequest extends AsyncTask<String, String, JSONObject> {
     private ProgressDialog pdia;
     private Context context;
     private JSONArray jsonCookieStore;
     private HTTPAsyncResponse delegate;
 
-    public HTTPRequestCategories(Context context, JSONArray jsonCookieStore, HTTPAsyncResponse delegate){
+    public getCategoriesHttpRequest(Context context, JSONArray jsonCookieStore, HTTPAsyncResponse delegate){
         this.context = context;
         this.jsonCookieStore = jsonCookieStore;
         this.delegate = delegate;

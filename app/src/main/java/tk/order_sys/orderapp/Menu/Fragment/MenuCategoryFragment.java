@@ -19,7 +19,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-import tk.order_sys.HTTPRequest.HTTPRequestCategories;
+import tk.order_sys.HTTPRequest.getCategoriesHttpRequest;
 import tk.order_sys.Interface.HTTPAsyncResponse;
 import tk.order_sys.config.appConfig;
 import tk.order_sys.mapi.models.ContentCategory;
@@ -55,7 +55,7 @@ public class MenuCategoryFragment extends Fragment implements HTTPAsyncResponse 
         if (appConfig.isNetworkAvailable(context)) {
             try {
 
-                new HTTPRequestCategories(getActivity(), jsonCookieStore, this).execute();
+                new getCategoriesHttpRequest(getActivity(), jsonCookieStore, this).execute();
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
