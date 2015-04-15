@@ -77,18 +77,15 @@ public class MenuCategoryFragment extends Fragment implements HTTPAsyncResponse 
     public void onHTTPAsyncResponse(JSONObject jsonObject) {
         if (jsonObject != null) {
             JSONArray jsonArrCategories = null;
+
             try {
                 if(!jsonObject.isNull("Cookies"))
                 {
                     JSONArray jsonArray = new JSONArray(jsonObject.get("Cookies").toString());
                     jsonCookieStore = jsonArray;
                 }
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
 
-            try {
-                if(jsonObject.isNull("categories")){
+                if(!jsonObject.isNull("categories")){
                     jsonArrCategories = jsonObject.getJSONArray("categories");
                     JSONObject jsonCategory = null;
 

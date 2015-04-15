@@ -14,12 +14,12 @@ import android.view.MenuItem;
 import org.json.JSONArray;
 import org.json.JSONException;
 
-import tk.order_sys.orderapp.Menu.NavigationDrawerFragment;
 import tk.order_sys.orderapp.Menu.Fragment.MenuCategoryFragment;
 import tk.order_sys.orderapp.Menu.Fragment.MenuFavoriteFragment;
 import tk.order_sys.orderapp.Menu.Fragment.MenuHistoryFragment;
 import tk.order_sys.orderapp.Menu.Fragment.MenuHomeFragment;
 import tk.order_sys.orderapp.Menu.Fragment.MenuOrderListFragment;
+import tk.order_sys.orderapp.Menu.NavigationDrawerFragment;
 
 
 public class MainActivity extends ActionBarActivity implements NavigationDrawerFragment.NavigationDrawerCallbacks {
@@ -48,12 +48,14 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
         if (savedInstanceState != null) {
             mCurrentMenuFragmentSection = savedInstanceState.getInt(STATE_SELECTED_POSITION);
             try {
-                jsonCookieStore = new JSONArray(savedInstanceState.getString(STATE_COOKIE).toString());
-            }catch (NullPointerException e){
+                String mSaveCookieStore = savedInstanceState.getString(STATE_COOKIE).toString();
+                if (!mSaveCookieStore.isEmpty()) jsonCookieStore = new JSONArray(mSaveCookieStore);
+            } catch (NullPointerException e) {
                 e.printStackTrace();
-            }catch (JSONException e) {
+            } catch (JSONException e) {
                 e.printStackTrace();
             }
+
         }
 
 
@@ -76,7 +78,7 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putInt(STATE_SELECTED_POSITION, mCurrentMenuFragmentSection);
-        if(jsonCookieStore != null){
+        if (jsonCookieStore != null) {
             outState.putString(STATE_COOKIE, jsonCookieStore.toString());
         }
     }
@@ -89,12 +91,15 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
             }
 
             if (data.hasExtra("mCookieStore")) {
-                try {
-                    jsonCookieStore = new JSONArray(data.getStringExtra("mCookieStore"));
-                    Log.i("CURRCOOKIE", "main" + jsonCookieStore.toString());
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                    jsonCookieStore = null;
+                String callBackCookieStore = data.getStringExtra("mCookieStore");
+                if (!callBackCookieStore.isEmpty()) {
+                    try {
+                        jsonCookieStore = new JSONArray(callBackCookieStore);
+                        Log.i("CURRCOOKIE", "main" + jsonCookieStore.toString());
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                        jsonCookieStore = null;
+                    }
                 }
             }
         }
