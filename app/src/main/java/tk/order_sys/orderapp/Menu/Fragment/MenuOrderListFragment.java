@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import tk.order_sys.HTTPRequest.getCartHttpRequest;
 import tk.order_sys.gps.GpsTracer;
 import tk.order_sys.mapi.models.ContentCart;
+import tk.order_sys.orderapp.MainActivity;
 import tk.order_sys.orderapp.Menu.Adapter.MenuCartAdapter;
 import tk.order_sys.Interface.HTTPAsyncResponse;
 import tk.order_sys.orderapp.R;
@@ -86,44 +87,34 @@ public class MenuOrderListFragment extends Fragment implements HTTPAsyncResponse
     public void onHTTPAsyncResponse(JSONObject jsonObject) {
         if (jsonObject != null) {
             JSONArray jsonArrCart = null;
-
-            Log.i("CURRCOOKIE", "getCart1 " + jsonObject.toString());
-
             try {
-                JSONArray jsonArray = new JSONArray(jsonObject.get("Cookies").toString());
-
-                jsonCookieStore = jsonArray;
-
-                Log.i("CURRCOOKIE", "getCart " + jsonCookieStore.toString());
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }catch (NullPointerException e){
-                e.printStackTrace();
-            }
-
-            try {
-                jsonArrCart = jsonObject.getJSONArray("Cart");
-                JSONObject jsonArrCartItem = null;
-
-                for (int i = 0; i < jsonArrCart.length(); i++) {
-                    jsonArrCartItem = jsonArrCart.getJSONObject(i);
-                    ContentCart item = new ContentCart(
-                            jsonArrCartItem.getString("id"),
-                            jsonArrCartItem.getString("name"),
-                            jsonArrCartItem.getString("price"),
-                            jsonArrCartItem.getString("qty"));
-
-                    listCartItem.add(item);
-                    orderTotal += Long.valueOf(item.price);
+                if(!jsonObject.isNull("Cookies")){
+                    jsonCookieStore = new JSONArray(jsonObject.get("Cookies").toString());
+                    ((MainActivity)getActivity()).updateFromFragment(jsonCookieStore);
                 }
 
-                txtViewCartTotal.setText((CharSequence) String.format("%,d", orderTotal) + " đồng");
+                if(!jsonObject.isNull("Cart")){
+                    jsonArrCart = jsonObject.getJSONArray("Cart");
+                    JSONObject jsonArrCartItem = null;
 
-                Log.i("Current", listCartItem.get(0).name);
-                lvCart = (ListView) rootView.findViewById(R.id.lvCart);
-                lvCart.setAdapter(new MenuCartAdapter(getActivity().getApplicationContext(), R.layout.cart_item_row, listCartItem));
+                    for (int i = 0; i < jsonArrCart.length(); i++) {
+                        jsonArrCartItem = jsonArrCart.getJSONObject(i);
+                        ContentCart item = new ContentCart(
+                                jsonArrCartItem.getString("id"),
+                                jsonArrCartItem.getString("name"),
+                                jsonArrCartItem.getString("price"),
+                                jsonArrCartItem.getString("qty"));
 
+                        listCartItem.add(item);
+                        orderTotal += Long.valueOf(item.price);
+                    }
 
+                    txtViewCartTotal.setText((CharSequence) String.format("%,d", orderTotal) + " đồng");
+
+                    Log.i("Current", listCartItem.get(0).name);
+                    lvCart = (ListView) rootView.findViewById(R.id.lvCart);
+                    lvCart.setAdapter(new MenuCartAdapter(getActivity().getApplicationContext(), R.layout.cart_item_row, listCartItem));
+                }
             } catch (JSONException e) {
                 e.printStackTrace();
             }catch (NullPointerException e){

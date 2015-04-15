@@ -8,7 +8,6 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.app.NavUtils;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -16,7 +15,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -41,18 +39,16 @@ import tk.order_sys.mapi.API;
 import tk.order_sys.mapi.models.ContentProduct;
 
 
-public class ProductActivity extends ActionBarActivity implements HTTPAsyncResponse{
+public class ProductActivity extends ActionBarActivity implements HTTPAsyncResponse {
     private String cat_name = "";
     private String cat_id = "";
 
     private JSONArray jsonCookieStore;
 
     ListView lvProducts;
-    
+
     private static final String CALL_BACK_FRAGMET_TAG = "mMenuFragmentSection";
     private static final String CALL_BACK_COOKIE_STORE_TAG = "mCookieStore";
-
-    HashMap<String, String> hashCartItems = new HashMap<String, String>();
 
     ArrayList<ContentProduct> listProducts = new ArrayList<ContentProduct>();
 
@@ -67,12 +63,10 @@ public class ProductActivity extends ActionBarActivity implements HTTPAsyncRespo
         cat_id = (String) catInfo.get("cat_id");
         cat_name = (String) catInfo.get("cat_name");
 
-        if ((String) catInfo.get("jsonCookieStore") != null) {
+        if (!catInfo.get("jsonCookieStore").toString().isEmpty()){
             try {
                 jsonCookieStore = new JSONArray(catInfo.get("jsonCookieStore").toString());
-                Log.i("CURRCOOKIE", "product" + jsonCookieStore.toString());
             } catch (JSONException e) {
-                Log.i("CURRCOOKIE", "product");
                 e.printStackTrace();
             }
         }
@@ -111,7 +105,8 @@ public class ProductActivity extends ActionBarActivity implements HTTPAsyncRespo
             case android.R.id.home:
                 callBackData = new Intent();
                 callBackData.putExtra(CALL_BACK_FRAGMET_TAG, 1);
-                if (jsonCookieStore != null) callBackData.putExtra(CALL_BACK_COOKIE_STORE_TAG, jsonCookieStore.toString());
+                if (jsonCookieStore != null)
+                    callBackData.putExtra(CALL_BACK_COOKIE_STORE_TAG, jsonCookieStore.toString());
 
                 setResult(Activity.RESULT_OK, callBackData);
                 finish();
@@ -123,14 +118,15 @@ public class ProductActivity extends ActionBarActivity implements HTTPAsyncRespo
 
     @Override
     public void onHTTPAsyncResponse(JSONObject jsonObject) {
-        JSONArray jsonArrProducts = null;
-        if(!jsonObject.isNull("products")){
-            try {
+        try {
+            if (!jsonObject.isNull("Cookies")) {
+                jsonCookieStore = new JSONArray(jsonObject.get("Cookies").toString());
+            }
 
-
-
-                jsonArrProducts = jsonObject.getJSONArray("products");
+            if (!jsonObject.isNull("products")) {
+                JSONArray jsonArrProducts = jsonObject.getJSONArray("products");
                 JSONObject jsonArrProduct = null;
+
                 for (int i = 0; i < jsonArrProducts.length(); i++) {
                     jsonArrProduct = jsonArrProducts.getJSONObject(i);
 
@@ -147,28 +143,10 @@ public class ProductActivity extends ActionBarActivity implements HTTPAsyncRespo
                 }
 
                 lvProducts.setAdapter(new ProductsAdapter(ProductActivity.this, R.layout.product_row, listProducts));
-                lvProducts.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                        Toast.makeText(getApplicationContext(), listProducts.get(position).name, Toast.LENGTH_SHORT).show();
-                    }
-                });
-
-                Log.i("CURRCOOKIE", "product" + jsonObject.toString());
-
-            } catch (JSONException e) {
-                e.printStackTrace();
             }
 
-            try {
-                JSONArray jsonArray = new JSONArray(jsonObject.get("Cookies").toString());
-
-                jsonCookieStore = jsonArray;
-
-                Log.i("CURRCOOKIE", "product httpres " + jsonCookieStore.toString());
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
     }
 
@@ -247,8 +225,6 @@ public class ProductActivity extends ActionBarActivity implements HTTPAsyncRespo
 
             return view;
         }
-
-
     }
 
     private class httpRequestAddCartItems extends AsyncTask<JSONObject, Void, JSONObject> {
@@ -293,5 +269,5 @@ public class ProductActivity extends ActionBarActivity implements HTTPAsyncRespo
             pdia.dismiss();
         }
     }
-
 }
+
