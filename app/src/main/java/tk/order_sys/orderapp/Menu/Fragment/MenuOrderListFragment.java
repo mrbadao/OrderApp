@@ -19,7 +19,9 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
+import tk.order_sys.HTTPRequest.checkoutCartHttpRequest;
 import tk.order_sys.HTTPRequest.getCartHttpRequest;
+import tk.order_sys.Interface.CartHttpAsyncResponse;
 import tk.order_sys.gps.GpsTracer;
 import tk.order_sys.mapi.models.ContentCart;
 import tk.order_sys.orderapp.MainActivity;
@@ -31,7 +33,7 @@ import tk.order_sys.config.appConfig;
 /**
  * Created by HieuNguyen on 4/6/2015.
  */
-public class MenuOrderListFragment extends Fragment implements HTTPAsyncResponse {
+public class MenuOrderListFragment extends Fragment implements HTTPAsyncResponse, View.OnClickListener, CartHttpAsyncResponse {
     View rootView;
     ListView lvCart;
     Button btnCheckOut;
@@ -63,11 +65,7 @@ public class MenuOrderListFragment extends Fragment implements HTTPAsyncResponse
             try {
                 location = gpsTracer.getLocation();
                 btnCheckOut = (Button) rootView.findViewById(R.id.btnCheckOut);
-                btnCheckOut.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                    }
-                });
+                btnCheckOut.setOnClickListener(this);
 
                 txtViewCartTotal = (TextView) rootView.findViewById(R.id.txtView_cart_total);
                 new getCartHttpRequest(getActivity(), jsonCookieStore, this).execute();
@@ -106,7 +104,7 @@ public class MenuOrderListFragment extends Fragment implements HTTPAsyncResponse
                                 jsonArrCartItem.getString("qty"));
 
                         listCartItem.add(item);
-                        orderTotal += Long.valueOf(item.price);
+                        orderTotal += Long.valueOf(item.price) * Long.valueOf(item.qty);
                     }
 
                     txtViewCartTotal.setText((CharSequence) String.format("%,d", orderTotal) + " đồng");
@@ -121,5 +119,39 @@ public class MenuOrderListFragment extends Fragment implements HTTPAsyncResponse
                 e.printStackTrace();
             }
         }
+    }
+
+    @Override
+    public void onClick(View v) {
+        int id = v.getId();
+
+        switch (id){
+            case R.id.btnCheckOut:
+                new checkoutCartHttpRequest(getActivity(), jsonCookieStore, this).execute();
+                break;
+        }
+    }
+
+    @Override
+    public void onCartHttpAsyncResponse(JSONObject jsonObject) {
+       if(jsonObject!= null){
+           Log.i("ERROR CHECKOUT", jsonObject.toString());
+           try {
+               if (!jsonObject.isNull("Cookies")) {
+                   jsonCookieStore = new JSONArray(jsonObject.get("Cookies").toString());
+                   ((MainActivity) getActivity()).updateFromFragment(jsonCookieStore);
+               }
+
+               if(!jsonObject.isNull("error")){
+                   JSONObject jsonError = jsonObject.getJSONObject("error");
+                   Log.i("ERROR CHECKOUT", jsonError.getString("error_code"));
+               }
+
+           }catch (JSONException e) {
+               e.printStackTrace();
+           }catch (NullPointerException e){
+               e.printStackTrace();
+           }
+       }
     }
 }
