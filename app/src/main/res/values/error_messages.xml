@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="error_no_connection">Vui lòng kiểm tra kết nối Internet của bạn.</string>
+    <string name="error_attributes">Vui lòng kiểm tra thông tin của bạn.</string>
+</resources>

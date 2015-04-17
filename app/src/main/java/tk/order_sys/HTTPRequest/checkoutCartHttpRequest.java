@@ -14,7 +14,7 @@ import tk.order_sys.mapi.API;
 /**
  * Created by HieuNguyen on 4/16/2015.
  */
-public class checkoutCartHttpRequest extends AsyncTask<String, String, JSONObject> {
+public class checkoutCartHttpRequest extends AsyncTask<JSONObject, String, JSONObject> {
     public CartHttpAsyncResponse delegate;
     private ProgressDialog pdia;
     private Context context;
@@ -34,12 +34,12 @@ public class checkoutCartHttpRequest extends AsyncTask<String, String, JSONObjec
     }
 
     @Override
-    protected JSONObject doInBackground(String... params) {
-        return API.checkoutCart(null, jsonCookieStore);
+    protected JSONObject doInBackground(JSONObject... params) {
+        return API.checkoutCart(params[0], jsonCookieStore);
     }
 
     protected void onPostExecute(JSONObject jsonObject) {
-        delegate.onCartHttpAsyncResponse(jsonObject);
+        delegate.onCheckoutCartHttpAsyncResponse(jsonObject);
         pdia.dismiss();
     }
 }

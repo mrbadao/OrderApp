@@ -98,7 +98,7 @@
         <EditText
             android:layout_width="53dp"
             android:layout_height="wrap_content"
-            android:inputType="numberSigned"
+            android:inputType="number"
             android:ems="10"
             android:id="@+id/txtEdit_productQuanty"
             android:layout_marginLeft="10dp"

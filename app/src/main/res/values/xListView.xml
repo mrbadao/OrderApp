@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="xlistview_header_hint_normal">Refresh dropdown</string>
+    <string name="xlistview_header_hint_ready">Refresh</string>
+    <string name="xlistview_header_hint_loading">Loading...</string>
+    <string name="xlistview_header_last_time">Lần cập nhật gần nhất：</string>
+    <string name="xlistview_footer_hint_normal">Xem thêm</string>
+    <string name="xlistview_footer_hint_ready">Load more</string>
+</resources>

@@ -1,14 +1,17 @@
 package tk.order_sys.orderapp.Menu.Fragment;
 
+import android.content.Context;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -24,9 +27,11 @@ import tk.order_sys.HTTPRequest.getCartHttpRequest;
 import tk.order_sys.Interface.CartHttpAsyncResponse;
 import tk.order_sys.gps.GpsTracer;
 import tk.order_sys.mapi.models.ContentCart;
+import tk.order_sys.orderapp.Dialogs.CartDialog;
 import tk.order_sys.orderapp.MainActivity;
 import tk.order_sys.orderapp.Menu.Adapter.MenuCartAdapter;
 import tk.order_sys.Interface.HTTPAsyncResponse;
+import tk.order_sys.orderapp.Profile.MyInfo;
 import tk.order_sys.orderapp.R;
 import tk.order_sys.config.appConfig;
 
@@ -37,6 +42,9 @@ public class MenuOrderListFragment extends Fragment implements HTTPAsyncResponse
     View rootView;
     ListView lvCart;
     Button btnCheckOut;
+    EditText editTxtPhone;
+    EditText editTxtName;
+    EditText editTxtEmail;
     TextView txtViewCartTotal;
     Long orderTotal;
     GpsTracer gpsTracer;
@@ -59,13 +67,26 @@ public class MenuOrderListFragment extends Fragment implements HTTPAsyncResponse
         orderTotal = Long.valueOf(0);
 
         GpsTracer gpsTracer = new GpsTracer(getActivity());
-        if (!gpsTracer.canGetGPS())
+
+        if (!gpsTracer.canGetGPS()) {
             gpsTracer.showSettingAlert();
+        }
         else if (appConfig.isNetworkAvailable(getActivity().getBaseContext())) {
             try {
                 location = gpsTracer.getLocation();
+
+//                Toast.makeText(getActivity().getApplicationContext(), String.valueOf(location.getLatitude()), Toast.LENGTH_SHORT).show();
+
                 btnCheckOut = (Button) rootView.findViewById(R.id.btnCheckOut);
                 btnCheckOut.setOnClickListener(this);
+
+                editTxtPhone = (EditText) rootView.findViewById(R.id.txtPhoneNumber);
+                editTxtName = (EditText) rootView.findViewById(R.id.txtName);
+                editTxtEmail = (EditText) rootView.findViewById(R.id.txtEmail);
+
+
+                editTxtPhone.setText(MyInfo.getPhoneNumber(getActivity()));
+                editTxtEmail.setText(MyInfo.getGoogleMail(getActivity(), "com.google"));
 
                 txtViewCartTotal = (TextView) rootView.findViewById(R.id.txtView_cart_total);
                 new getCartHttpRequest(getActivity(), jsonCookieStore, this).execute();
@@ -127,13 +148,39 @@ public class MenuOrderListFragment extends Fragment implements HTTPAsyncResponse
 
         switch (id){
             case R.id.btnCheckOut:
-                new checkoutCartHttpRequest(getActivity(), jsonCookieStore, this).execute();
+//                try{
+//                    location = gpsTracer.getLocation();
+
+//                    Toast.makeText(getActivity().getApplicationContext(), String.valueOf(location.getLatitude()), Toast.LENGTH_SHORT).show();
+//                }catch (NullPointerException e){e.printStackTrace();}
+
+                String Name = String.valueOf(editTxtName.getText());
+                String Email = String.valueOf(editTxtEmail.getText());
+                String Phone = String.valueOf(editTxtPhone.getText());
+                if( !Name.isEmpty() && !Email.isEmpty() && !Phone.isEmpty()){
+//                    location != null &&
+                    JSONObject checkoutParams = new JSONObject();
+                    try {
+                        checkoutParams.put("name", Name);
+                        checkoutParams.put("email", Email);
+                        checkoutParams.put("phone", Phone);
+//                        checkoutParams.put("coordinate_long",String.valueOf(location.getLongitude()));
+//                        checkoutParams.put("coordinate_lat", String.valueOf(location.getLatitude()));
+
+                        Log.i("PARAMS", checkoutParams.toString());
+
+                        new checkoutCartHttpRequest(getActivity(), jsonCookieStore, this).execute(checkoutParams);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }else CartDialog.showDialog(getActivity(), "Lỗi đặt hàng", "Thông tin đặt hàng chưa chính xác.");
+
                 break;
         }
     }
 
     @Override
-    public void onCartHttpAsyncResponse(JSONObject jsonObject) {
+    public void onCheckoutCartHttpAsyncResponse(JSONObject jsonObject) {
        if(jsonObject!= null){
            Log.i("ERROR CHECKOUT", jsonObject.toString());
            try {
@@ -144,7 +191,27 @@ public class MenuOrderListFragment extends Fragment implements HTTPAsyncResponse
 
                if(!jsonObject.isNull("error")){
                    JSONObject jsonError = jsonObject.getJSONObject("error");
-                   Log.i("ERROR CHECKOUT", jsonError.getString("error_code"));
+                   String error_code = jsonError.getString("error_code");
+
+                   switch (error_code){
+                       case "1006":
+                           CartDialog.showDialog(getActivity(), "Lỗi đặt hàng", "Không có mặt hàng trong giỏ hàng của bạn.");
+                           break;
+                       case "1010":
+                           CartDialog.showDialog(getActivity(), "Lỗi đặt hàng", "Mặt hàng không phù hợp.");
+                           break;
+                       default:
+                           CartDialog.showDialog(getActivity(), "Lỗi đặt hàng", "Có lỗi xãy ra trong qua trình đặt hàng.");
+                   }
+               }
+
+               if(!jsonObject.isNull("status")){
+                   JSONObject jsonStatus = jsonObject.getJSONObject("status");
+                   String status_code = jsonStatus.getString("status_code");
+
+                   if(status_code.equals("1009")){
+                       CartDialog.showDialog(getActivity(), "Thông báo", "Bạn đã đặt hàng thành công. \nMã đơn hàng của bạn là:\n " + jsonStatus.get("order_id"));
+                   }
                }
 
            }catch (JSONException e) {
