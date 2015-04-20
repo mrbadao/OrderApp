@@ -2,29 +2,14 @@ package tk.order_sys.orderapp;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
-import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.ListView;
-import android.widget.TextView;
-import android.widget.Toast;
-
-import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -34,13 +19,10 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 
 import tk.order_sys.HTTPRequest.getProductHttpRequest;
 import tk.order_sys.Interface.AdapterResponse;
 import tk.order_sys.Interface.HTTPAsyncResponse;
-import tk.order_sys.config.appConfig;
-import tk.order_sys.mapi.API;
 import tk.order_sys.mapi.models.ContentProduct;
 import tk.order_sys.orderapp.Menu.Adapter.ProductsAdapter;
 import tk.order_sys.orderapp.XListView.view.XListView;
@@ -54,8 +36,8 @@ public class ProductActivity extends ActionBarActivity implements HTTPAsyncRespo
 
     private XListView lvProducts;
     private Handler mHandler;
-    private int offset = 0;
-    private int itemCount = 0;
+    private int page;
+    private int pages;
     private boolean isFirstLoad = false;
     private static final int LOAD_MORE_ITEMS = 5;
 
@@ -72,12 +54,15 @@ public class ProductActivity extends ActionBarActivity implements HTTPAsyncRespo
         jsonCookieStore = null;
         setContentView(R.layout.activity_product);
 
+        page = 1;
+        pages = 0;
+
         Bundle catInfo = getIntent().getExtras();
 
         cat_id = (String) catInfo.get("cat_id");
         cat_name = (String) catInfo.get("cat_name");
 
-        if (!catInfo.get("jsonCookieStore").toString().isEmpty()){
+        if (!catInfo.get("jsonCookieStore").toString().isEmpty()) {
             try {
                 jsonCookieStore = new JSONArray(catInfo.get("jsonCookieStore").toString());
             } catch (JSONException e) {
@@ -91,13 +76,11 @@ public class ProductActivity extends ActionBarActivity implements HTTPAsyncRespo
         getProducts();
         lvProducts.setPullLoadEnable(true);
         mHandler = new Handler();
-
-//        new getProductHttpRequest(ProductActivity.this, cat_id, jsonCookieStore, this).execute();
     }
 
     private void getProducts() {
-        if(cat_id != "")
-            new getProductHttpRequest(ProductActivity.this, cat_id, LOAD_MORE_ITEMS, jsonCookieStore, this).execute(offset);
+        if (cat_id != "")
+            new getProductHttpRequest(ProductActivity.this, cat_id, LOAD_MORE_ITEMS, jsonCookieStore, this).execute((page - 1) * LOAD_MORE_ITEMS);
     }
 
     private void onLoad() {
@@ -113,7 +96,8 @@ public class ProductActivity extends ActionBarActivity implements HTTPAsyncRespo
         mHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                offset = 0;
+                page = 1;
+                pages = 0;
                 isFirstLoad = true;
                 listProducts.clear();
                 getProducts();
@@ -128,10 +112,13 @@ public class ProductActivity extends ActionBarActivity implements HTTPAsyncRespo
         mHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                if(offset < itemCount)
+                page++;
+                if (page <= pages && pages != 0)
                     getProducts();
-                else
+                else {
                     lvProducts.stopLoadMore();
+                    lvProducts.stopRefresh();
+                }
             }
         }, 2000);
     }
@@ -139,8 +126,9 @@ public class ProductActivity extends ActionBarActivity implements HTTPAsyncRespo
     @Override
     public void onHTTPAsyncResponse(JSONObject jsonObject) {
         try {
-            if (!jsonObject.isNull("count")){
-                itemCount = jsonObject.getInt("count");
+            if (!jsonObject.isNull("count")) {
+                pages = (int) Math.ceil(jsonObject.getDouble("count") / (double) LOAD_MORE_ITEMS);
+                Log.i("paging", String.valueOf(pages));
             }
             if (!jsonObject.isNull("Cookies")) {
                 jsonCookieStore = new JSONArray(jsonObject.get("Cookies").toString());
@@ -148,7 +136,6 @@ public class ProductActivity extends ActionBarActivity implements HTTPAsyncRespo
 
             if (!jsonObject.isNull("products")) {
                 JSONArray jsonArrProducts = jsonObject.getJSONArray("products");
-                offset = jsonArrProducts.length();
                 JSONObject jsonArrProduct = null;
 
                 for (int i = 0; i < jsonArrProducts.length(); i++) {
@@ -237,125 +224,5 @@ public class ProductActivity extends ActionBarActivity implements HTTPAsyncRespo
             }
         }
     }
-
-
-//    private class ProductsAdapter extends ArrayAdapter {
-//        Context context;
-//        int layoutRes;
-//        ArrayList<ContentProduct> Products;
-//
-//        public ProductsAdapter(Context context, int resource, ArrayList<ContentProduct> objects) {
-//            super(context, resource, objects);
-//            this.context = context;
-//            this.layoutRes = resource;
-//            Products = objects;
-//        }
-//
-//        @Override
-//        public int getCount() {
-//            return Products.size();
-//        }
-//
-//        @Override
-//        public Object getItem(int position) {
-//            return Products.get(position);
-//        }
-//
-//        @Override
-//        public View getView(final int position, View convertView, ViewGroup parent) {
-//            View view = null;
-//            LayoutInflater mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-//
-//            if (convertView == null) {
-//                view = mInflater.inflate(R.layout.product_row, parent, false);
-//            } else {
-//                view = convertView;
-//            }
-//
-//            TextView productName = (TextView) view.findViewById(R.id.txtView_productTitle);
-//            TextView productPrice = (TextView) view.findViewById(R.id.txtView_productPrice);
-//            ImageView productThumbnail = (ImageView) view.findViewById(R.id.productThumbnail);
-//            TextView productDescription = (TextView) view.findViewById(R.id.txtView_productDescription);
-//            Button btnAddtoCart = (Button) view.findViewById(R.id.btnAddCart);
-//
-//            final ContentProduct item = (ContentProduct) getItem(position);
-//
-//            Picasso.with(getApplicationContext())
-//                    .load(item.thumbnail)
-//                    .into(productThumbnail);
-//
-//            productThumbnail.setScaleType(ImageView.ScaleType.FIT_CENTER);
-//            productName.setText((CharSequence) item.name);
-//            productPrice.setText((CharSequence) "Giá: " + String.format("%,d", Long.valueOf(item.price)) + " đồng");
-//            productDescription.setText((CharSequence) item.description);
-//
-//            btnAddtoCart.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    View rootView = v.getRootView();
-//                    EditText editTxtQuanty = (EditText) rootView.findViewById(R.id.quanty);
-//
-//                    String quanty = String.valueOf(editTxtQuanty.getText());
-//
-//                    String CartItem = "{'cartItems':[{'id':'" + item.id + "', 'qty':'" + quanty + "'}]}";
-//
-//                    JSONObject post_data = null;
-//
-//                    try {
-//                        post_data = new JSONObject(CartItem);
-//                    } catch (JSONException e) {
-//                        e.printStackTrace();
-//                    }
-//
-//                    new httpRequestAddCartItems(getApplicationContext()).execute(post_data);
-//                }
-//            });
-//
-//            return view;
-//        }
-//    }
-//
-//    private class httpRequestAddCartItems extends AsyncTask<JSONObject, Void, JSONObject> {
-//        private Context context;
-//        private ProgressDialog pdia;
-//
-//        public httpRequestAddCartItems(Context context) {
-//            super();
-//            this.context = context;
-//        }
-//
-//        @Override
-//        protected void onPreExecute() {
-//            pdia = new ProgressDialog(ProductActivity.this);
-//            pdia.setMessage("Loading...");
-//            pdia.show();
-//        }
-//
-//        @Override
-//        protected JSONObject doInBackground(JSONObject... params) {
-//            if (appConfig.isNetworkAvailable(context)) {
-//                return API.addCartItem(params[0], jsonCookieStore);
-//            } else {
-//                Toast.makeText(context, R.string.error_no_connection, Toast.LENGTH_SHORT).show();
-//            }
-//            return null;
-//        }
-//
-//        @Override
-//        protected void onPostExecute(JSONObject jsonObject) {
-//            if (jsonObject != null) {
-//                try {
-//                    JSONArray jsonArray = new JSONArray(jsonObject.get("Cookies").toString());
-//
-//                    jsonCookieStore = jsonArray;
-//
-//                    Log.i("CURRCOOKIE", "httpRequestAddCartItems" + jsonCookieStore.toString());
-//                } catch (JSONException e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//            pdia.dismiss();
-//        }
-//    }
 }
 
