@@ -124,7 +124,7 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
                 mTitle = this.MainMenu[1];
                 break;
             case 2:
-                menuFragment = new MenuFavoriteFragment();
+                menuFragment = new MenuFavoriteFragment(jsonCookieStore);
                 mTitle = this.MainMenu[2];
                 break;
             case 3:

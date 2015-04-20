@@ -2,37 +2,34 @@ package tk.order_sys.HTTPRequest;
 
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.Intent;
 import android.os.AsyncTask;
 import android.util.Log;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ListView;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import tk.order_sys.Interface.AdapterResponse;
 import tk.order_sys.Interface.HTTPAsyncResponse;
+import tk.order_sys.config.appConfig;
 import tk.order_sys.mapi.API;
-import tk.order_sys.mapi.models.ContentCategory;
-import tk.order_sys.orderapp.Menu.Adapter.MenuCategoryAdapter;
-import tk.order_sys.orderapp.ProductActivity;
 import tk.order_sys.orderapp.R;
 
 /**
- * Created by mrbadao on 13/04/2015.
+ * Created by HieuNguyen on 4/20/2015.
  */
-public class getCategoriesHttpRequest extends AsyncTask<String, String, JSONObject> {
-    private ProgressDialog pdia;
+public class addItemCartHttpRequest extends AsyncTask<JSONObject, Void, JSONObject> {
     private Context context;
     private JSONArray jsonCookieStore;
-    private HTTPAsyncResponse delegate;
+    public HTTPAsyncResponse delegate;
+    private ProgressDialog pdia;
 
-    public getCategoriesHttpRequest(Context context, JSONArray jsonCookieStore, HTTPAsyncResponse delegate){
+    public addItemCartHttpRequest(Context context, JSONArray jsonCookieStore, HTTPAsyncResponse delegate) {
+        super();
         this.context = context;
         this.jsonCookieStore = jsonCookieStore;
-        this.delegate = delegate;
+        this.delegate= delegate;
     }
 
     @Override
@@ -43,10 +40,16 @@ public class getCategoriesHttpRequest extends AsyncTask<String, String, JSONObje
     }
 
     @Override
-    protected JSONObject doInBackground(String... params) {
-        return API.getCategories(jsonCookieStore);
+    protected JSONObject doInBackground(JSONObject... params) {
+        if (appConfig.isNetworkAvailable(context)) {
+            return API.addCartItem(params[0], jsonCookieStore);
+        } else {
+            Toast.makeText(context, R.string.error_no_connection, Toast.LENGTH_SHORT).show();
+        }
+        return null;
     }
 
+    @Override
     protected void onPostExecute(JSONObject jsonObject) {
         delegate.onHTTPAsyncResponse(jsonObject);
         pdia.dismiss();

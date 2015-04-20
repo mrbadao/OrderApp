@@ -12,27 +12,35 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
 
+import tk.order_sys.HTTPRequest.addItemCartHttpRequest;
+import tk.order_sys.Interface.AdapterResponse;
+import tk.order_sys.Interface.HTTPAsyncResponse;
 import tk.order_sys.mapi.models.ContentProduct;
 import tk.order_sys.orderapp.R;
 
 /**
  * Created by HieuNguyen on 4/17/2015.
  */
-public class ProductsAdapter extends ArrayAdapter {
-    Context context;
-    int layoutRes;
-    ArrayList<ContentProduct> Products;
+public class ProductsAdapter extends ArrayAdapter implements HTTPAsyncResponse {
+    private Context context;
+    private AdapterResponse delegate;
+    private JSONArray jsonCookieStore;
+    private int layoutRes;
+    private ArrayList<ContentProduct> Products;
 
-    public ProductsAdapter(Context context, int resource, ArrayList<ContentProduct> objects) {
+    public ProductsAdapter(Context context, int resource, ArrayList<ContentProduct> objects, JSONArray jsonCookieStore, AdapterResponse delegate) {
         super(context, resource, objects);
         this.context = context;
         this.layoutRes = resource;
         Products = objects;
+        this.jsonCookieStore = jsonCookieStore;
+        this.delegate = delegate;
     }
 
     @Override
@@ -87,14 +95,29 @@ public class ProductsAdapter extends ArrayAdapter {
 
                 try {
                     post_data = new JSONObject(CartItem);
+
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
 
-//                    new httpRequestAddCartItems(getApplicationContext()).execute(post_data);
+                new addItemCartHttpRequest(context, jsonCookieStore, ProductsAdapter.this).execute(post_data);
             }
         });
 
         return view;
+    }
+
+    @Override
+    public void onHTTPAsyncResponse(JSONObject jsonObject) {
+        if (jsonObject != null) {
+            if (!jsonObject.isNull("Cookies")) {
+                try {
+                    jsonCookieStore = new JSONArray(jsonObject.get("Cookies").toString());
+                    this.delegate.onAdapterResponse(jsonObject);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
     }
 }

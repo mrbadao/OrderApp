@@ -4,9 +4,10 @@
     android:layout_height="match_parent"
     tools:context="tk.order_sys.orderapp.ProductActivity">
 
-    <ListView
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
+
+    <tk.order_sys.orderapp.XListView.view.XListView
         android:id="@+id/lvProducts"
-        android:layout_alignParentEnd="false" />
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent" android:cacheColorHint="#00000000">
+    </tk.order_sys.orderapp.XListView.view.XListView>
 </RelativeLayout>
