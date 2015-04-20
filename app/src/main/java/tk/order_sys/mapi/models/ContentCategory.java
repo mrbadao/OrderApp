@@ -25,6 +25,14 @@ public class ContentCategory implements Parcelable {
         this.modified = modified;
     }
 
+    public ContentCategory(Parcel p){
+        id = p.readString();
+        name = p.readString();
+        abbr_cd = p.readString();
+        created = p.readString();
+        modified = p.readString();
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -32,6 +40,24 @@ public class ContentCategory implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-
+        dest.writeString(id);
+        dest.writeString(name);
+        dest.writeString(abbr_cd);
+        dest.writeString(created);
+        dest.writeString(modified);
     }
+
+    public static final Parcelable.Creator<ContentCategory> CREATOR = new Creator<ContentCategory>() {
+
+        public ContentCategory createFromParcel(Parcel source) {
+
+            return new ContentCategory(source);
+        }
+
+        public ContentCategory[] newArray(int size) {
+
+            return new ContentCategory[size];
+        }
+
+    };
 }

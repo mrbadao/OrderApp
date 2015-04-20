@@ -210,6 +210,8 @@ public class MenuOrderListFragment extends Fragment implements HTTPAsyncResponse
                    String status_code = jsonStatus.getString("status_code");
 
                    if(status_code.equals("1009")){
+                       lvCart.setAdapter(null);
+                       txtViewCartTotal.setText(null);
                        CartDialog.showDialog(getActivity(), "Thông báo", "Bạn đã đặt hàng thành công. \nMã đơn hàng của bạn là:\n " + jsonStatus.get("order_id"));
                    }
                }
