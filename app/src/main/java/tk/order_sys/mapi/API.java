@@ -43,6 +43,7 @@ public class API {
     static final String API_CART_ADD_ITEM = "cart/add";
     static final String API_CART_GET_ITEM = "cart/getcart";
     static final String API_CART_CHECKOUT = "cart/checkout";
+    static final String API_ORDER_GET = "cart/getorder";
     // constructor
 
     public API() {
@@ -241,6 +242,10 @@ public class API {
 
     public static JSONObject checkoutCart(JSONObject params, JSONArray jsonCookieStore) {
         return getJSON(appConfig.getApiUrl(true) + API_CART_CHECKOUT, params, jsonCookieStore);
+    }
+
+    public static JSONObject getOrder(JSONObject params, JSONArray jsonCookieStore) {
+        return getJSON(appConfig.getApiUrl(true) + API_ORDER_GET, params, jsonCookieStore);
     }
 
     public static JSONObject getProducts(JSONObject params, JSONArray jsonCookieStore) {

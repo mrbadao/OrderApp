@@ -2,4 +2,7 @@
 <resources>
     <color name="state_activated">#c62b1f</color>
     <color name="actionbar_background">#c62b1f</color>
+    <color name="fragment_history_stt_complete">#af0a24</color>
+    <color name="fragment_history_stt_in_process">#c1bb16</color>
+    <color name="fragment_history_stt_new">#2da105</color>
 </resources>

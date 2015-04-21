@@ -5,13 +5,39 @@
 
 
     <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/imgVHistoryStt" />
-
-    <TextView
-        android:layout_width="wrap_content"
+        android:layout_width="20dp"
         android:layout_height="match_parent"
-        android:text="New Text"
-        android:id="@+id/txtHistoryRow" />
+        android:id="@+id/imgVHistoryStt"
+        android:background="@color/fragment_history_stt_complete" />
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="New Text"
+            android:id="@+id/txtHistoryRow"
+            android:padding="5dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="Small Text"
+            android:id="@+id/txtCreated"
+            android:layout_marginLeft="20dp"
+            android:paddingBottom="5dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:id="@+id/txtCompleted"
+            android:layout_marginLeft="20dp"
+            android:paddingBottom="5dp" />
+    </LinearLayout>
+
 </LinearLayout>
