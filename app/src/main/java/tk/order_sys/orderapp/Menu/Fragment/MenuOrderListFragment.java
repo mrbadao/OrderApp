@@ -1,11 +1,9 @@
 package tk.order_sys.orderapp.Menu.Fragment;
 
-import android.content.Context;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,7 +25,7 @@ import tk.order_sys.HTTPRequest.getCartHttpRequest;
 import tk.order_sys.Interface.CartHttpAsyncResponse;
 import tk.order_sys.gps.GpsTracer;
 import tk.order_sys.mapi.models.ContentCart;
-import tk.order_sys.orderapp.Dialogs.CartDialog;
+import tk.order_sys.orderapp.Dialogs.OrderAppDialog;
 import tk.order_sys.orderapp.MainActivity;
 import tk.order_sys.orderapp.Menu.Adapter.MenuCartAdapter;
 import tk.order_sys.Interface.HTTPAsyncResponse;
@@ -173,7 +171,7 @@ public class MenuOrderListFragment extends Fragment implements HTTPAsyncResponse
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
-                }else CartDialog.showDialog(getActivity(), "Lỗi đặt hàng", "Thông tin đặt hàng chưa chính xác.");
+                }else OrderAppDialog.showAlertDialog(getActivity(), "Lỗi đặt hàng", "Thông tin đặt hàng chưa chính xác.");
 
                 break;
         }
@@ -195,13 +193,13 @@ public class MenuOrderListFragment extends Fragment implements HTTPAsyncResponse
 
                    switch (error_code){
                        case "1006":
-                           CartDialog.showDialog(getActivity(), "Lỗi đặt hàng", "Không có mặt hàng trong giỏ hàng của bạn.");
+                           OrderAppDialog.showAlertDialog(getActivity(), "Lỗi đặt hàng", "Không có mặt hàng trong giỏ hàng của bạn.");
                            break;
                        case "1010":
-                           CartDialog.showDialog(getActivity(), "Lỗi đặt hàng", "Mặt hàng không phù hợp.");
+                           OrderAppDialog.showAlertDialog(getActivity(), "Lỗi đặt hàng", "Mặt hàng không phù hợp.");
                            break;
                        default:
-                           CartDialog.showDialog(getActivity(), "Lỗi đặt hàng", "Có lỗi xãy ra trong qua trình đặt hàng.");
+                           OrderAppDialog.showAlertDialog(getActivity(), "Lỗi đặt hàng", "Có lỗi xãy ra trong qua trình đặt hàng.");
                    }
                }
 
@@ -212,7 +210,7 @@ public class MenuOrderListFragment extends Fragment implements HTTPAsyncResponse
                    if(status_code.equals("1009")){
                        lvCart.setAdapter(null);
                        txtViewCartTotal.setText(null);
-                       CartDialog.showDialog(getActivity(), "Thông báo", "Bạn đã đặt hàng thành công. \nMã đơn hàng của bạn là:\n " + jsonStatus.get("order_id"));
+                       OrderAppDialog.showAlertDialog(getActivity(), "Thông báo", "Bạn đã đặt hàng thành công. \nMã đơn hàng của bạn là:\n " + jsonStatus.get("order_id"));
                    }
                }
 

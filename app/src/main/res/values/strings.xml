@@ -13,9 +13,7 @@
 
     <string name="hello_world">Hello world!</string>
     <string name="action_cart_add">Thêm vào giỏ</string>
+    <string name="action_delete_order">Xóa đơn hàng</string>
 
-
-
-
-
+    <string name="title_activity_order_detail">OrderDetailActivity</string>
 </resources>

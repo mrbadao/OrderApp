@@ -1,5 +1,6 @@
 package tk.order_sys.orderapp.Menu.Fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
@@ -8,6 +9,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -22,16 +25,20 @@ import tk.order_sys.HTTPRequest.getOrderHttpRequest;
 import tk.order_sys.Interface.HTTPAsyncResponse;
 import tk.order_sys.mapi.models.ContentOrder;
 import tk.order_sys.mapi.models.ContentProduct;
+import tk.order_sys.orderapp.Dialogs.OrderAppDialog;
 import tk.order_sys.orderapp.MainActivity;
 import tk.order_sys.orderapp.Menu.Adapter.OrdersAdapter;
 import tk.order_sys.orderapp.Menu.Adapter.ProductsAdapter;
+import tk.order_sys.orderapp.OrderDetailActivity;
+import tk.order_sys.orderapp.ProductActivity;
 import tk.order_sys.orderapp.R;
 import tk.order_sys.orderapp.XListView.view.XListView;
 
 /**
  * Created by HieuNguyen on 4/6/2015.
  */
-public class MenuHistoryFragment extends Fragment implements HTTPAsyncResponse, XListView.IXListViewListener {
+public class MenuHistoryFragment extends Fragment implements HTTPAsyncResponse, XListView.IXListViewListener, AdapterView.OnItemClickListener {
+    public static final int ACTIVITY_CODE = 102;
     View rootView;
 
     private XListView listViewHistory;
@@ -66,6 +73,7 @@ public class MenuHistoryFragment extends Fragment implements HTTPAsyncResponse, 
         getProducts();
 
         listViewHistory.setPullLoadEnable(true);
+        listViewHistory.setOnItemClickListener(this);
         mHandler = new Handler();
 
         return rootView;
@@ -173,5 +181,26 @@ public class MenuHistoryFragment extends Fragment implements HTTPAsyncResponse, 
                 }
             }
         }, 2000);
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        if(listOrder.size() > 0){
+            try {
+                Intent intent = new Intent(getActivity().getBaseContext(), OrderDetailActivity.class);
+
+                intent.putExtra("order_id", listOrder.get(position-1).id);
+                intent.putExtra("order_name", listOrder.get(position-1).name);
+                intent.putExtra("order_stt", listOrder.get(position-1).status);
+
+                if (jsonCookieStore != null) {
+                    intent.putExtra("jsonCookieStore", jsonCookieStore.toString());
+                } else intent.putExtra("jsonCookieStore", "");
+
+                getActivity().startActivityForResult(intent, ACTIVITY_CODE);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 }

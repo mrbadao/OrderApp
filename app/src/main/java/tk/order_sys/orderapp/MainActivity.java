@@ -85,7 +85,7 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (resultCode == RESULT_OK && requestCode == MenuCategoryFragment.ACTIVITY_CODE) {
+        if (resultCode == RESULT_OK && (requestCode == MenuCategoryFragment.ACTIVITY_CODE || requestCode == MenuHistoryFragment.ACTIVITY_CODE)) {
             if (data.hasExtra("mMenuFragmentSection")) {
                 mCurrentMenuFragmentSection = data.getIntExtra("mMenuFragmentSection", 0);
             }
