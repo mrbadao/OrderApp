@@ -23,7 +23,9 @@ import java.util.Date;
 import tk.order_sys.HTTPRequest.getProductHttpRequest;
 import tk.order_sys.Interface.AdapterResponse;
 import tk.order_sys.Interface.HTTPAsyncResponse;
+import tk.order_sys.config.appConfig;
 import tk.order_sys.mapi.models.ContentProduct;
+import tk.order_sys.orderapp.Dialogs.OrderAppDialog;
 import tk.order_sys.orderapp.Menu.Adapter.ProductsAdapter;
 import tk.order_sys.orderapp.XListView.view.XListView;
 
@@ -53,7 +55,7 @@ public class ProductActivity extends ActionBarActivity implements HTTPAsyncRespo
         super.onCreate(savedInstanceState);
         jsonCookieStore = null;
         setContentView(R.layout.activity_product);
-
+        if (appConfig.isNetworkAvailable(getApplicationContext())) {
         page = 1;
         pages = 0;
 
@@ -76,6 +78,10 @@ public class ProductActivity extends ActionBarActivity implements HTTPAsyncRespo
         getProducts();
         lvProducts.setPullLoadEnable(true);
         mHandler = new Handler();
+        }else {
+            OrderAppDialog.showNetworkAlertDialog(ProductActivity.this);
+        }
+
     }
 
     private void getProducts() {

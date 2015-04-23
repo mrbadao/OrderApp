@@ -12,9 +12,6 @@ import android.widget.EditText;
  * Created by HieuNguyen on 4/17/2015.
  */
 public class OrderAppDialog {
-//    AlertDialog dialog;
-//    Context context;
-//    String Title;
 
     public OrderAppDialog(){
 
@@ -38,32 +35,30 @@ public class OrderAppDialog {
         alertDialog.show();
     }
 
-    public static void showPromtInfoDialog(Context context, String Title, String resMsg){
-        AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        builder.setTitle(Title);
+    public static void showNetworkAlertDialog(Context context){
+        final Context _context = context;
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
 
-     // Set up the input
-        final EditText phone = new EditText(context);
-        phone.setHint("Số điện thoại");
+        alertDialogBuilder.setTitle("Cài đặt mạng");
+        alertDialogBuilder.setMessage("Hiện không có kết nối internet. Bạn có muốn đến menu cài đặt không ?");
 
-        phone.setInputType(InputType.TYPE_CLASS_NUMBER| InputType.TYPE_NUMBER_FLAG_DECIMAL);
-        builder.setView(phone);
-
-        // Set up the buttons
-        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+        alertDialogBuilder.setPositiveButton("Cài đặt", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                phone.getText().toString();
+                Intent intent = new Intent(Settings.ACTION_WIFI_SETTINGS);
+                _context.startActivity(intent);
             }
         });
 
-        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+        alertDialogBuilder.setNegativeButton("Hủy bỏ", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.cancel();
             }
         });
-        AlertDialog alertDialog = builder.create();
+
+        AlertDialog alertDialog = alertDialogBuilder.create();
+
         alertDialog.show();
     }
 }

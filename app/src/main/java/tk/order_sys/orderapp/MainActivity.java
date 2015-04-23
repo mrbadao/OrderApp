@@ -177,4 +177,8 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
     public void updateFromFragment(JSONArray jsonCookieStore){
         this.jsonCookieStore = jsonCookieStore;
     }
+
+    public void updateSelectedFragment(int mCurrentMenuFragmentSection){
+        this.mCurrentMenuFragmentSection = mCurrentMenuFragmentSection;
+    }
 }

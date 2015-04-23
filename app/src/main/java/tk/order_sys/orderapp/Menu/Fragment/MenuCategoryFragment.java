@@ -23,6 +23,8 @@ import tk.order_sys.HTTPRequest.getCategoriesHttpRequest;
 import tk.order_sys.Interface.HTTPAsyncResponse;
 import tk.order_sys.config.appConfig;
 import tk.order_sys.mapi.models.ContentCategory;
+import tk.order_sys.orderapp.Dialogs.OrderAppDialog;
+import tk.order_sys.orderapp.MainActivity;
 import tk.order_sys.orderapp.Menu.Adapter.MenuCategoryAdapter;
 import tk.order_sys.orderapp.ProductActivity;
 import tk.order_sys.orderapp.R;
@@ -61,7 +63,7 @@ public class MenuCategoryFragment extends Fragment implements HTTPAsyncResponse 
             }
 
         } else {
-            Toast.makeText(context, R.string.error_no_connection, Toast.LENGTH_SHORT).show();
+            OrderAppDialog.showNetworkAlertDialog(getActivity());
         }
 
         return rootView;
@@ -71,6 +73,7 @@ public class MenuCategoryFragment extends Fragment implements HTTPAsyncResponse 
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
+        ((MainActivity)getActivity()).updateSelectedFragment(1);
     }
 
     @Override

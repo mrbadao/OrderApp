@@ -10,7 +10,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -23,14 +22,12 @@ import java.util.Date;
 
 import tk.order_sys.HTTPRequest.getOrderHttpRequest;
 import tk.order_sys.Interface.HTTPAsyncResponse;
+import tk.order_sys.config.appConfig;
 import tk.order_sys.mapi.models.ContentOrder;
-import tk.order_sys.mapi.models.ContentProduct;
 import tk.order_sys.orderapp.Dialogs.OrderAppDialog;
 import tk.order_sys.orderapp.MainActivity;
 import tk.order_sys.orderapp.Menu.Adapter.OrdersAdapter;
-import tk.order_sys.orderapp.Menu.Adapter.ProductsAdapter;
 import tk.order_sys.orderapp.OrderDetailActivity;
-import tk.order_sys.orderapp.ProductActivity;
 import tk.order_sys.orderapp.R;
 import tk.order_sys.orderapp.XListView.view.XListView;
 
@@ -62,19 +59,29 @@ public class MenuHistoryFragment extends Fragment implements HTTPAsyncResponse, 
     }
 
     @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        ((MainActivity)getActivity()).updateSelectedFragment(3);
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.menu_history_fragment, container, false);
+        if (appConfig.isNetworkAvailable(getActivity().getApplicationContext())) {
 
-        page = 1;
-        pages = 0;
+            page = 1;
+            pages = 0;
 
-        isFirstLoad = true;
-        listViewHistory = (XListView) rootView.findViewById(R.id.xListViewHistory);
-        getProducts();
+            isFirstLoad = true;
+            listViewHistory = (XListView) rootView.findViewById(R.id.xListViewHistory);
+            getProducts();
 
-        listViewHistory.setPullLoadEnable(true);
-        listViewHistory.setOnItemClickListener(this);
-        mHandler = new Handler();
+            listViewHistory.setPullLoadEnable(true);
+            listViewHistory.setOnItemClickListener(this);
+            mHandler = new Handler();
+        } else {
+            OrderAppDialog.showNetworkAlertDialog(getActivity());
+        }
 
         return rootView;
     }
@@ -99,7 +106,7 @@ public class MenuHistoryFragment extends Fragment implements HTTPAsyncResponse, 
                 if (!jsonObject.isNull("count")) {
                     pages = (int) Math.ceil(jsonObject.getDouble("count") / (double) LOAD_MORE_ITEMS);
                     Log.i("paging", String.valueOf(pages));
-                    if (pages == 1){
+                    if (pages == 1) {
                         listViewHistory.setPullLoadEnable(false);
                     }
                 }
@@ -125,23 +132,27 @@ public class MenuHistoryFragment extends Fragment implements HTTPAsyncResponse, 
                                 jsonArrOrder.getString("completed")
                         ));
                     }
-                    if (isFirstLoad) {
-                        DateFormat dateFormat = new SimpleDateFormat("HH:mm:ss dd/MM/yyyy");
-                        Date date = new Date();
-                        listViewHistory.setRefreshTime(dateFormat.format(date));
+                    if(listOrder.size()>0){
+                        if (isFirstLoad) {
+                            DateFormat dateFormat = new SimpleDateFormat("HH:mm:ss dd/MM/yyyy");
+                            Date date = new Date();
+                            listViewHistory.setRefreshTime(dateFormat.format(date));
 
-                        mAdapter = new OrdersAdapter(getActivity(), R.layout.menu_history_row, listOrder, jsonCookieStore);
+                            mAdapter = new OrdersAdapter(getActivity(), R.layout.menu_history_row, listOrder, jsonCookieStore);
 
-                        listViewHistory.setAdapter(mAdapter);
-                        listViewHistory.setXListViewListener(this);
-                        isFirstLoad = false;
-                    } else {
-                        mAdapter.notifyDataSetChanged();
-                        onLoad();
+                            listViewHistory.setAdapter(mAdapter);
+                            listViewHistory.setXListViewListener(this);
+                            isFirstLoad = false;
+                        } else {
+                            mAdapter.notifyDataSetChanged();
+                            onLoad();
+                        }
                     }
                 }
 
             } catch (JSONException e) {
+                e.printStackTrace();
+            } catch (NullPointerException e){
                 e.printStackTrace();
             }
 
@@ -185,13 +196,13 @@ public class MenuHistoryFragment extends Fragment implements HTTPAsyncResponse, 
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        if(listOrder.size() > 0){
+        if (listOrder.size() > 0) {
             try {
                 Intent intent = new Intent(getActivity().getBaseContext(), OrderDetailActivity.class);
 
-                intent.putExtra("order_id", listOrder.get(position-1).id);
-                intent.putExtra("order_name", listOrder.get(position-1).name);
-                intent.putExtra("order_stt", listOrder.get(position-1).status);
+                intent.putExtra("order_id", listOrder.get(position - 1).id);
+                intent.putExtra("order_name", listOrder.get(position - 1).name);
+                intent.putExtra("order_stt", listOrder.get(position - 1).status);
 
                 if (jsonCookieStore != null) {
                     intent.putExtra("jsonCookieStore", jsonCookieStore.toString());

@@ -20,7 +20,9 @@ import java.util.Date;
 import tk.order_sys.HTTPRequest.getHotProductHttpRequest;
 import tk.order_sys.Interface.AdapterResponse;
 import tk.order_sys.Interface.HTTPAsyncResponse;
+import tk.order_sys.config.appConfig;
 import tk.order_sys.mapi.models.ContentProduct;
+import tk.order_sys.orderapp.Dialogs.OrderAppDialog;
 import tk.order_sys.orderapp.MainActivity;
 import tk.order_sys.orderapp.Menu.Adapter.ProductsAdapter;
 import tk.order_sys.orderapp.R;
@@ -53,14 +55,24 @@ public class MenuFavoriteFragment extends Fragment implements XListView.IXListVi
     }
 
     @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        ((MainActivity)getActivity()).updateSelectedFragment(2);
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.menu_favorite_fragment, container, false);
-        isFirstLoad = true;
-        getProducts();
-        mListViewFavorite = (XListView) rootView.findViewById(R.id.xListViewFavorite);
-        mListViewFavorite.setPullLoadEnable(false);
+        if(appConfig.isNetworkAvailable(getActivity().getApplicationContext())) {
+            isFirstLoad = true;
+            getProducts();
+            mListViewFavorite = (XListView) rootView.findViewById(R.id.xListViewFavorite);
+            mListViewFavorite.setPullLoadEnable(false);
 
-        mHandler = new Handler();
+            mHandler = new Handler();
+        }else{
+            OrderAppDialog.showNetworkAlertDialog(getActivity());
+        }
 
         return rootView;
     }
@@ -127,23 +139,28 @@ public class MenuFavoriteFragment extends Fragment implements XListView.IXListVi
                             jsonArrProduct.getString("modified")
                     ));
                 }
-                if (isFirstLoad) {
-                    DateFormat dateFormat = new SimpleDateFormat("HH:mm:ss dd/MM/yyyy");
-                    Date date = new Date();
-                    mListViewFavorite.setRefreshTime(dateFormat.format(date));
+                if (listProducts.size()>0) {
+                    if (isFirstLoad) {
+                        DateFormat dateFormat = new SimpleDateFormat("HH:mm:ss dd/MM/yyyy");
+                        Date date = new Date();
+                        mListViewFavorite.setRefreshTime(dateFormat.format(date));
 
-                    mAdapter = new ProductsAdapter(getActivity(), R.layout.product_row, listProducts, jsonCookieStore, this);
 
-                    mListViewFavorite.setAdapter(mAdapter);
-                    mListViewFavorite.setXListViewListener(this);
-                    isFirstLoad = false;
-                } else {
-                    mAdapter.notifyDataSetChanged();
-                    onLoad();
+                        mAdapter = new ProductsAdapter(getActivity(), R.layout.product_row, listProducts, jsonCookieStore, this);
+
+                        mListViewFavorite.setAdapter(mAdapter);
+                        mListViewFavorite.setXListViewListener(this);
+                        isFirstLoad = false;
+                    } else {
+                        mAdapter.notifyDataSetChanged();
+                        onLoad();
+                    }
                 }
             }
 
         } catch (JSONException e) {
+            e.printStackTrace();
+        }catch (NullPointerException e){
             e.printStackTrace();
         }
     }
