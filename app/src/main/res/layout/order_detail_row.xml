@@ -94,7 +94,8 @@
             android:layout_marginTop="-4dp"
             android:textAlignment="gravity"
             android:gravity="center"
-            android:text="1" />
+            android:text="1"
+            android:textSize="20dp" />
 
         <TextView
             android:layout_width="match_parent"

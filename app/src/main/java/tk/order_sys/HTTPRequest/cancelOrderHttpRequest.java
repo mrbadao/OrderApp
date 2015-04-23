@@ -9,19 +9,20 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import tk.order_sys.Interface.CancelOrderHTTPAsyncResponse;
 import tk.order_sys.Interface.HTTPAsyncResponse;
 import tk.order_sys.mapi.API;
 
 /**
  * Created by mrbadao on 13/04/2015.
  */
-public class getOrderDetailHttpRequest extends AsyncTask<String, String, JSONObject> {
-    public HTTPAsyncResponse delegate;
+public class cancelOrderHttpRequest extends AsyncTask<String, String, JSONObject> {
+    public CancelOrderHTTPAsyncResponse delegate;
     private ProgressDialog pdia;
     private Context context;
     private JSONArray jsonCookieStore;
 
-    public getOrderDetailHttpRequest(Context context, JSONArray jsonCookieStore, HTTPAsyncResponse delegate) {
+    public cancelOrderHttpRequest(Context context, JSONArray jsonCookieStore, CancelOrderHTTPAsyncResponse delegate) {
         this.context = context;
         this.jsonCookieStore = jsonCookieStore;
         this.delegate = delegate;
@@ -43,12 +44,11 @@ public class getOrderDetailHttpRequest extends AsyncTask<String, String, JSONObj
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        return API.getOrderDetail(post_params, jsonCookieStore);
+        return API.cancelOrder(post_params, jsonCookieStore);
     }
 
     protected void onPostExecute(JSONObject jsonObject) {
-        Log.i("HTTP",jsonObject.toString());
-        delegate.onHTTPAsyncResponse(jsonObject);
+        delegate.onCancelOrderHTTPAsyncResponse(jsonObject);
         pdia.dismiss();
     }
 }

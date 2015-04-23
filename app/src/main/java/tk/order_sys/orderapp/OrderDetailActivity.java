@@ -15,12 +15,19 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+
+import tk.order_sys.HTTPRequest.cancelOrderHttpRequest;
 import tk.order_sys.HTTPRequest.getOrderDetailHttpRequest;
+import tk.order_sys.Interface.CancelOrderHTTPAsyncResponse;
 import tk.order_sys.Interface.HTTPAsyncResponse;
+import tk.order_sys.mapi.models.ContentCart;
+import tk.order_sys.orderapp.Menu.Adapters.MenuCartAdapter;
+import tk.order_sys.orderapp.Menu.Adapters.OrderDetailAdapter;
 import tk.order_sys.orderapp.XListView.view.XListView;
 
 
-public class OrderDetailActivity extends ActionBarActivity implements HTTPAsyncResponse{
+public class OrderDetailActivity extends ActionBarActivity implements HTTPAsyncResponse, CancelOrderHTTPAsyncResponse {
     private static final String CALL_BACK_FRAGMET_TAG = "mMenuFragmentSection";
     private static final String CALL_BACK_COOKIE_STORE_TAG = "mCookieStore";
 
@@ -30,6 +37,11 @@ public class OrderDetailActivity extends ActionBarActivity implements HTTPAsyncR
 
     private JSONArray jsonCookieStore = null;
     ListView lisViewOrderDetail;
+    ArrayList<ContentCart> listOrderDetail = new ArrayList<ContentCart>();
+
+    OrderDetailAdapter mAdapter;
+
+    Long orderTotal = Long.valueOf(0);
 
 
     @Override
@@ -54,7 +66,7 @@ public class OrderDetailActivity extends ActionBarActivity implements HTTPAsyncR
 
         lisViewOrderDetail = (ListView) findViewById(R.id.listViewOrderDetail);
 
-        new getOrderDetailHttpRequest(OrderDetailActivity.this, jsonCookieStore,this);
+        new getOrderDetailHttpRequest(OrderDetailActivity.this, jsonCookieStore,this).execute(order_id);
 
         setTitle(order_name);
     }
@@ -73,7 +85,7 @@ public class OrderDetailActivity extends ActionBarActivity implements HTTPAsyncR
 
         switch (id) {
             case R.id.action_delete_order:
-                Toast.makeText(getApplicationContext(), order_stt, Toast.LENGTH_SHORT).show();
+                new cancelOrderHttpRequest(OrderDetailActivity.this, jsonCookieStore, this).execute(order_id);
                 break;
 
             case android.R.id.home:
@@ -92,7 +104,42 @@ public class OrderDetailActivity extends ActionBarActivity implements HTTPAsyncR
     @Override
     public void onHTTPAsyncResponse(JSONObject jsonObject) {
         if(jsonObject != null){
-            Log.i("ORDER_DETAIL", jsonObject.toString());
+            JSONArray jsonOrderDetail = null;
+            try {
+                if(!jsonObject.isNull("Cookies")){
+                    jsonCookieStore = new JSONArray(jsonObject.get("Cookies").toString());
+                }
+
+                if(!jsonObject.isNull("order")){
+                    jsonOrderDetail = jsonObject.getJSONArray("order");
+                    JSONObject jsonOrderDetailItem = null;
+
+                    for (int i = 0; i < jsonOrderDetail.length(); i++) {
+                        jsonOrderDetailItem = jsonOrderDetail.getJSONObject(i);
+                        ContentCart item = new ContentCart(
+                                jsonOrderDetailItem.getString("id"),
+                                jsonOrderDetailItem.getString("name"),
+                                jsonOrderDetailItem.getString("price"),
+                                jsonOrderDetailItem.getString("qty"));
+
+                        listOrderDetail.add(item);
+                        orderTotal += Long.valueOf(item.price) * Long.valueOf(item.qty);
+                    }
+                    mAdapter = new OrderDetailAdapter(getApplicationContext(), R.layout.order_detail_row, listOrderDetail);
+                    lisViewOrderDetail.setAdapter(mAdapter);
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }catch (NullPointerException e){
+                e.printStackTrace();
+            }
+        }
+    }
+
+    @Override
+    public void onCancelOrderHTTPAsyncResponse(JSONObject jsonObject) {
+        if(jsonObject != null){
+            Toast.makeText(getApplicationContext(), jsonObject.toString(), Toast.LENGTH_SHORT).show();
         }
     }
 }

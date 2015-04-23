@@ -43,8 +43,9 @@ public class API {
     static final String API_CART_ADD_ITEM = "cart/add";
     static final String API_CART_GET_ITEM = "cart/getcart";
     static final String API_CART_CHECKOUT = "cart/checkout";
-    static final String API_ORDER_GET = "cart/getorder";
-    static final String API_ORDER_DETAIL_GET = "cart/getorderdetail";
+    static final String API_ORDER_GET = "order/getorder";
+    static final String API_ORDER_DETAIL_GET = "order/getorderdetail";
+    static final String API_ORDER_CANCEL = "order/cancelorder";
     // constructor
 
     public API() {
@@ -259,6 +260,10 @@ public class API {
 
     public static JSONObject getOrderDetail(JSONObject params, JSONArray jsonCookieStore) {
         return getJSON(appConfig.getApiUrl(true) + API_ORDER_DETAIL_GET, params, jsonCookieStore);
+    }
+
+    public static JSONObject cancelOrder(JSONObject params, JSONArray jsonCookieStore) {
+        return getJSON(appConfig.getApiUrl(true) + API_ORDER_CANCEL, params, jsonCookieStore);
     }
 
 }
