@@ -1,4 +1,4 @@
-package tk.order_sys.orderapp.Menu.Adapter;
+package tk.order_sys.orderapp.Menu.Adapters;
 
 import android.content.Context;
 import android.view.LayoutInflater;

@@ -20,13 +20,13 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
-import tk.order_sys.HTTPRequest.getOrderHttpRequest;
+import tk.order_sys.HTTPRequest.getOrdersHttpRequest;
 import tk.order_sys.Interface.HTTPAsyncResponse;
 import tk.order_sys.config.appConfig;
 import tk.order_sys.mapi.models.ContentOrder;
 import tk.order_sys.orderapp.Dialogs.OrderAppDialog;
 import tk.order_sys.orderapp.MainActivity;
-import tk.order_sys.orderapp.Menu.Adapter.OrdersAdapter;
+import tk.order_sys.orderapp.Menu.Adapters.OrdersAdapter;
 import tk.order_sys.orderapp.OrderDetailActivity;
 import tk.order_sys.orderapp.R;
 import tk.order_sys.orderapp.XListView.view.XListView;
@@ -87,7 +87,7 @@ public class MenuHistoryFragment extends Fragment implements HTTPAsyncResponse, 
     }
 
     private void getProducts() {
-        new getOrderHttpRequest(getActivity(), "0929028027", "hieunc18@gmail.com", LOAD_MORE_ITEMS, jsonCookieStore, this).execute((page - 1) * LOAD_MORE_ITEMS);
+        new getOrdersHttpRequest(getActivity(), "0929028027", "hieunc18@gmail.com", LOAD_MORE_ITEMS, jsonCookieStore, this).execute((page - 1) * LOAD_MORE_ITEMS);
     }
 
     private void onLoad() {

@@ -11,7 +11,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -25,7 +24,7 @@ import tk.order_sys.config.appConfig;
 import tk.order_sys.mapi.models.ContentCategory;
 import tk.order_sys.orderapp.Dialogs.OrderAppDialog;
 import tk.order_sys.orderapp.MainActivity;
-import tk.order_sys.orderapp.Menu.Adapter.MenuCategoryAdapter;
+import tk.order_sys.orderapp.Menu.Adapters.MenuCategoryAdapter;
 import tk.order_sys.orderapp.ProductActivity;
 import tk.order_sys.orderapp.R;
 

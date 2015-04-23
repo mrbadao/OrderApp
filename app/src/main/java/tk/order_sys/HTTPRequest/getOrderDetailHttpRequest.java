@@ -5,6 +5,7 @@ import android.content.Context;
 import android.os.AsyncTask;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import tk.order_sys.Interface.HTTPAsyncResponse;
@@ -13,13 +14,13 @@ import tk.order_sys.mapi.API;
 /**
  * Created by mrbadao on 13/04/2015.
  */
-public class getCategoriesHttpRequest extends AsyncTask<String, String, JSONObject> {
+public class getOrderDetailHttpRequest extends AsyncTask<String, String, JSONObject> {
+    public HTTPAsyncResponse delegate;
     private ProgressDialog pdia;
     private Context context;
     private JSONArray jsonCookieStore;
-    private HTTPAsyncResponse delegate;
 
-    public getCategoriesHttpRequest(Context context, JSONArray jsonCookieStore, HTTPAsyncResponse delegate){
+    public getOrderDetailHttpRequest(Context context, JSONArray jsonCookieStore, HTTPAsyncResponse delegate) {
         this.context = context;
         this.jsonCookieStore = jsonCookieStore;
         this.delegate = delegate;
@@ -34,7 +35,14 @@ public class getCategoriesHttpRequest extends AsyncTask<String, String, JSONObje
 
     @Override
     protected JSONObject doInBackground(String... params) {
-        return API.getCategories(jsonCookieStore);
+        JSONObject post_params = null;
+        try {
+            post_params =new JSONObject();
+            post_params.put("id", params[0]);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return API.getOrderDetail(post_params,jsonCookieStore);
     }
 
     protected void onPostExecute(JSONObject jsonObject) {

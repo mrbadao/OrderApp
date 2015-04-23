@@ -1,4 +1,4 @@
-package tk.order_sys.orderapp.Menu.Adapter;
+package tk.order_sys.orderapp.Menu.Adapters;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -12,8 +12,6 @@ import org.json.JSONArray;
 
 import java.util.ArrayList;
 
-import tk.order_sys.Interface.AdapterResponse;
-import tk.order_sys.Interface.HTTPAsyncResponse;
 import tk.order_sys.mapi.models.ContentOrder;
 import tk.order_sys.orderapp.R;
 

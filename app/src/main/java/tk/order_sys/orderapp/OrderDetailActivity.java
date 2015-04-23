@@ -8,15 +8,19 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
+import tk.order_sys.HTTPRequest.getOrderDetailHttpRequest;
+import tk.order_sys.Interface.HTTPAsyncResponse;
 import tk.order_sys.orderapp.XListView.view.XListView;
 
 
-public class OrderDetailActivity extends ActionBarActivity {
+public class OrderDetailActivity extends ActionBarActivity implements HTTPAsyncResponse{
     private static final String CALL_BACK_FRAGMET_TAG = "mMenuFragmentSection";
     private static final String CALL_BACK_COOKIE_STORE_TAG = "mCookieStore";
 
@@ -25,6 +29,8 @@ public class OrderDetailActivity extends ActionBarActivity {
     private String order_stt = "";
 
     private JSONArray jsonCookieStore = null;
+    ListView lisViewOrderDetail;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +51,10 @@ public class OrderDetailActivity extends ActionBarActivity {
                 e.printStackTrace();
             }
         }
+
+        lisViewOrderDetail = (ListView) findViewById(R.id.listViewOrderDetail);
+
+        new getOrderDetailHttpRequest(OrderDetailActivity.this, jsonCookieStore,this);
 
         setTitle(order_name);
     }
@@ -77,5 +87,12 @@ public class OrderDetailActivity extends ActionBarActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onHTTPAsyncResponse(JSONObject jsonObject) {
+        if(jsonObject != null){
+            Log.i("ORDER_DETAIL", jsonObject.toString());
+        }
     }
 }

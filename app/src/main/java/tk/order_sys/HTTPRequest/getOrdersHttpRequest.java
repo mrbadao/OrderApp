@@ -14,7 +14,7 @@ import tk.order_sys.mapi.API;
 /**
  * Created by HieuNguyen on 4/21/2015.
  */
-public class getOrderHttpRequest extends AsyncTask<Integer, String, JSONObject> {
+public class getOrdersHttpRequest extends AsyncTask<Integer, String, JSONObject> {
     private ProgressDialog pdia;
     private Context context;
     private JSONArray jsonCookieStore;
@@ -23,7 +23,7 @@ public class getOrderHttpRequest extends AsyncTask<Integer, String, JSONObject> 
     private String phone;
     private String email;
 
-    public getOrderHttpRequest(Context context, String phone, String email, int LOAD_MORE_ITEM, JSONArray jsonCookieStore, HTTPAsyncResponse delegate) {
+    public getOrdersHttpRequest(Context context, String phone, String email, int LOAD_MORE_ITEM, JSONArray jsonCookieStore, HTTPAsyncResponse delegate) {
         this.context = context;
         this.jsonCookieStore = jsonCookieStore;
         this.LOAD_MORE_ITEM= LOAD_MORE_ITEM;

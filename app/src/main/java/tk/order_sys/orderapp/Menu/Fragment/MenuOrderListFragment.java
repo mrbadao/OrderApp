@@ -27,7 +27,7 @@ import tk.order_sys.gps.GpsTracer;
 import tk.order_sys.mapi.models.ContentCart;
 import tk.order_sys.orderapp.Dialogs.OrderAppDialog;
 import tk.order_sys.orderapp.MainActivity;
-import tk.order_sys.orderapp.Menu.Adapter.MenuCartAdapter;
+import tk.order_sys.orderapp.Menu.Adapters.MenuCartAdapter;
 import tk.order_sys.Interface.HTTPAsyncResponse;
 import tk.order_sys.orderapp.Profile.MyInfo;
 import tk.order_sys.orderapp.R;

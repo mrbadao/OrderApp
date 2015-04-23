@@ -26,7 +26,7 @@ import tk.order_sys.Interface.HTTPAsyncResponse;
 import tk.order_sys.config.appConfig;
 import tk.order_sys.mapi.models.ContentProduct;
 import tk.order_sys.orderapp.Dialogs.OrderAppDialog;
-import tk.order_sys.orderapp.Menu.Adapter.ProductsAdapter;
+import tk.order_sys.orderapp.Menu.Adapters.ProductsAdapter;
 import tk.order_sys.orderapp.XListView.view.XListView;
 
 
