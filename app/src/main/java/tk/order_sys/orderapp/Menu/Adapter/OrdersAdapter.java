@@ -64,7 +64,7 @@ public class OrdersAdapter extends ArrayAdapter {
         ImageView imgVOrderStatus = (ImageView) view.findViewById(R.id.imgVHistoryStt);
 
         txtOrderName.setText((CharSequence) item.name);
-        txtOdrderCreated.setText((CharSequence) item.created);
+        txtOdrderCreated.setText((CharSequence) "Đặt lúc: " + item.created);
 
         switch (item.status){
             case "2":
@@ -72,11 +72,9 @@ public class OrdersAdapter extends ArrayAdapter {
                 imgVOrderStatus.setBackgroundResource(R.color.fragment_history_stt_complete);
                 break;
             case "1":
-                txtOrderCompleted.setText((CharSequence) item.completed);
                 imgVOrderStatus.setBackgroundResource(R.color.fragment_history_stt_in_process);
                 break;
             case "0":
-                txtOrderCompleted.setText((CharSequence) item.completed);
                 imgVOrderStatus.setBackgroundResource(R.color.fragment_history_stt_new);
                 break;
         }
