@@ -1,8 +1,10 @@
 package tk.order_sys.orderapp.Menu.Fragment;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -22,6 +24,7 @@ import java.util.Date;
 
 import tk.order_sys.HTTPRequest.getOrdersHttpRequest;
 import tk.order_sys.Interface.HTTPAsyncResponse;
+import tk.order_sys.config.Constants;
 import tk.order_sys.config.appConfig;
 import tk.order_sys.mapi.models.ContentOrder;
 import tk.order_sys.orderapp.Dialogs.OrderAppDialog;
@@ -87,7 +90,20 @@ public class MenuHistoryFragment extends Fragment implements HTTPAsyncResponse, 
     }
 
     private void getProducts() {
-        new getOrdersHttpRequest(getActivity(), "0929028027", "hieunc18@gmail.com", LOAD_MORE_ITEMS, jsonCookieStore, this).execute((page - 1) * LOAD_MORE_ITEMS);
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
+        String Email = "";
+        String Phone = "";
+
+        if (sharedPreferences.contains(Constants.SETTING_CUSTOMER_PHONE)) {
+            Phone = sharedPreferences.getString(Constants.SETTING_CUSTOMER_PHONE, "");
+        }
+        if (sharedPreferences.contains(Constants.SETTING_CUSTOMER_EMAIL)) {
+            Email = sharedPreferences.getString(Constants.SETTING_CUSTOMER_EMAIL, "");
+        }
+        if( !Email.isEmpty() && !Phone.isEmpty()){
+            new getOrdersHttpRequest(getActivity(), Phone, Email, LOAD_MORE_ITEMS, jsonCookieStore, this).execute((page - 1) * LOAD_MORE_ITEMS);
+        }else OrderAppDialog.showAlertDialog(getActivity(), "Lỗi đơn hàng", "Thông tin đơn hàng chưa chính xác.\n Hãy kiểm tra lại cài của bạn.");
+
     }
 
     private void onLoad() {

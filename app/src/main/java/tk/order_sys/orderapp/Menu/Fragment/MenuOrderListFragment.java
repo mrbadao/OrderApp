@@ -1,7 +1,10 @@
 package tk.order_sys.orderapp.Menu.Fragment;
 
+import android.content.SharedPreferences;
 import android.location.Location;
+import android.location.LocationListener;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -23,26 +26,26 @@ import java.util.ArrayList;
 import tk.order_sys.HTTPRequest.checkoutCartHttpRequest;
 import tk.order_sys.HTTPRequest.getCartHttpRequest;
 import tk.order_sys.Interface.CartHttpAsyncResponse;
+import tk.order_sys.Interface.HTTPAsyncResponse;
+import tk.order_sys.config.Constants;
+import tk.order_sys.config.appConfig;
 import tk.order_sys.gps.GpsTracer;
 import tk.order_sys.mapi.models.ContentCart;
 import tk.order_sys.orderapp.Dialogs.OrderAppDialog;
 import tk.order_sys.orderapp.MainActivity;
 import tk.order_sys.orderapp.Menu.Adapters.MenuCartAdapter;
-import tk.order_sys.Interface.HTTPAsyncResponse;
-import tk.order_sys.orderapp.Profile.MyInfo;
 import tk.order_sys.orderapp.R;
-import tk.order_sys.config.appConfig;
 
 /**
  * Created by HieuNguyen on 4/6/2015.
  */
-public class MenuOrderListFragment extends Fragment implements HTTPAsyncResponse, View.OnClickListener, CartHttpAsyncResponse {
+public class MenuOrderListFragment extends Fragment implements HTTPAsyncResponse, View.OnClickListener, CartHttpAsyncResponse, LocationListener {
     View rootView;
     ListView lvCart;
     Button btnCheckOut;
-    EditText editTxtPhone;
-    EditText editTxtName;
-    EditText editTxtEmail;
+    EditText editTxtAddress;
+//    EditText editTxtName;
+//    EditText editTxtEmail;
     TextView txtViewCartTotal;
     Long orderTotal;
     GpsTracer gpsTracer;
@@ -71,20 +74,12 @@ public class MenuOrderListFragment extends Fragment implements HTTPAsyncResponse
         }
         else if (appConfig.isNetworkAvailable(getActivity().getBaseContext())) {
             try {
-                location = gpsTracer.getLocation();
-
-//                Toast.makeText(getActivity().getApplicationContext(), String.valueOf(location.getLatitude()), Toast.LENGTH_SHORT).show();
+                location = null;
 
                 btnCheckOut = (Button) rootView.findViewById(R.id.btnCheckOut);
                 btnCheckOut.setOnClickListener(this);
 
-                editTxtPhone = (EditText) rootView.findViewById(R.id.txtPhoneNumber);
-                editTxtName = (EditText) rootView.findViewById(R.id.txtName);
-                editTxtEmail = (EditText) rootView.findViewById(R.id.txtEmail);
-
-
-                editTxtPhone.setText(MyInfo.getPhoneNumber(getActivity()));
-                editTxtEmail.setText(MyInfo.getGoogleMail(getActivity(), "com.google"));
+                editTxtAddress = (EditText) rootView.findViewById(R.id.txtAddress);
 
                 txtViewCartTotal = (TextView) rootView.findViewById(R.id.txtView_cart_total);
                 new getCartHttpRequest(getActivity(), jsonCookieStore, this).execute();
@@ -152,16 +147,34 @@ public class MenuOrderListFragment extends Fragment implements HTTPAsyncResponse
 //                    Toast.makeText(getActivity().getApplicationContext(), String.valueOf(location.getLatitude()), Toast.LENGTH_SHORT).show();
 //                }catch (NullPointerException e){e.printStackTrace();}
 
-                String Name = String.valueOf(editTxtName.getText());
-                String Email = String.valueOf(editTxtEmail.getText());
-                String Phone = String.valueOf(editTxtPhone.getText());
-                if( !Name.isEmpty() && !Email.isEmpty() && !Phone.isEmpty()){
+                String Name = "";
+                String Email = "";
+                String Phone = "";
+                String Address = String.valueOf(editTxtAddress.getText());
+
+                SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
+
+                if (sharedPreferences.contains(Constants.SETTING_CUSTOMER_NAME)) {
+                    Name = sharedPreferences.getString(Constants.SETTING_CUSTOMER_NAME, "");
+                }
+                if (sharedPreferences.contains(Constants.SETTING_CUSTOMER_PHONE)) {
+                    Phone = sharedPreferences.getString(Constants.SETTING_CUSTOMER_PHONE, "");
+                }
+                if (sharedPreferences.contains(Constants.SETTING_CUSTOMER_EMAIL)) {
+                    Email = sharedPreferences.getString(Constants.SETTING_CUSTOMER_EMAIL, "");
+                }
+
+
+
+
+                if( !Name.isEmpty() && !Email.isEmpty() && !Phone.isEmpty() && !Address.isEmpty()){
 //                    location != null &&
                     JSONObject checkoutParams = new JSONObject();
                     try {
                         checkoutParams.put("name", Name);
                         checkoutParams.put("email", Email);
                         checkoutParams.put("phone", Phone);
+                        checkoutParams.put("address", Address);
 //                        checkoutParams.put("coordinate_long",String.valueOf(location.getLongitude()));
 //                        checkoutParams.put("coordinate_lat", String.valueOf(location.getLatitude()));
 
@@ -171,7 +184,7 @@ public class MenuOrderListFragment extends Fragment implements HTTPAsyncResponse
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
-                }else OrderAppDialog.showAlertDialog(getActivity(), "Lỗi đặt hàng", "Thông tin đặt hàng chưa chính xác.");
+                }else OrderAppDialog.showAlertDialog(getActivity(), "Lỗi đặt hàng", "Thông tin đặt hàng chưa chính xác.\n Hãy kiểm tra lại cài đặt và địa chỉ của bạn.");
 
                 break;
         }
@@ -220,5 +233,25 @@ public class MenuOrderListFragment extends Fragment implements HTTPAsyncResponse
                e.printStackTrace();
            }
        }
+    }
+
+    @Override
+    public void onLocationChanged(Location location) {
+
+    }
+
+    @Override
+    public void onStatusChanged(String provider, int status, Bundle extras) {
+
+    }
+
+    @Override
+    public void onProviderEnabled(String provider) {
+
+    }
+
+    @Override
+    public void onProviderDisabled(String provider) {
+
     }
 }

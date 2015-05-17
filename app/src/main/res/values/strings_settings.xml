@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="title_activity_settings">Cài đặt</string>
+
+    <!--tk.order_sys.orderapp.settings.customer_name-->
+    <string name="pref_title_display_name">Tên của bạn</string>
+    <string name="pref_default_display_name">Khách hàng</string>
+
+    <!--tk.order_sys.orderapp.settings.customer_name-->
+    <string name="pref_title_display_phone">Số điện thoại của bạn</string>
+    <string name="pref_default_display_phone"></string>
+
+    <!--tk.order_sys.orderapp.settings.customer_email-->
+    <string name="pref_title_display_email">Email của bạn</string>
+    <string name="pref_default_display_email"></string>
+
+</resources>

@@ -1,6 +1,8 @@
 package tk.order_sys.orderapp;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -14,6 +16,7 @@ import android.view.MenuItem;
 import org.json.JSONArray;
 import org.json.JSONException;
 
+import tk.order_sys.config.appConfig;
 import tk.order_sys.orderapp.Menu.Fragment.MenuCategoryFragment;
 import tk.order_sys.orderapp.Menu.Fragment.MenuFavoriteFragment;
 import tk.order_sys.orderapp.Menu.Fragment.MenuHistoryFragment;
@@ -23,27 +26,24 @@ import tk.order_sys.orderapp.Menu.NavigationDrawerFragment;
 
 
 public class MainActivity extends ActionBarActivity implements NavigationDrawerFragment.NavigationDrawerCallbacks {
-
-    String[] MainMenu;
     private static final String STATE_SELECTED_POSITION = "selected_navigation_drawer_position";
     private static final String STATE_COOKIE = "Cart_cookie_store";
-    private JSONArray jsonCookieStore;
 
-    //Fragment managing the behaviors, interactions and presentation of the navigation drawer.
+    private SharedPreferences sharedPreferences;
     private NavigationDrawerFragment mNavigationDrawerFragment;
-
-    /**
-     * Used to store the last screen title. For use in {@link #restoreActionBar()}.
-     */
-    private CharSequence mTitle;
-
+    private JSONArray jsonCookieStore;
     private int mCurrentMenuFragmentSection = 0;
+
+    private String[] MainMenu;
+    private CharSequence mTitle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         jsonCookieStore = null;
+
+        sharedPreferences = this.getSharedPreferences(appConfig.getSharePreferenceTag(), Context.MODE_PRIVATE);
 
         if (savedInstanceState != null) {
             mCurrentMenuFragmentSection = savedInstanceState.getInt(STATE_SELECTED_POSITION);
@@ -169,6 +169,9 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
 
         switch(id){
             case R.id.action_settings:
+                Intent intentSettings;
+                intentSettings = new Intent(getApplicationContext(), SettingsActivity.class);
+                startActivity(intentSettings);
                 return true;
         }
         return super.onOptionsItemSelected(item);

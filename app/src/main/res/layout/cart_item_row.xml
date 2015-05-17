@@ -32,14 +32,14 @@
             android:paddingTop="5dp"
             android:layout_weight="0.84" />
 
-        <ImageView
-            android:clickable="true"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/imgView_removeCartItem"
-            android:src="@drawable/ic_action_remove"
-            android:textAlignment="gravity"
-            android:layout_marginRight="5dp" />
+        <!--<ImageView-->
+            <!--android:clickable="true"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:id="@+id/imgView_removeCartItem"-->
+            <!--android:src="@drawable/ic_action_remove"-->
+            <!--android:textAlignment="gravity"-->
+            <!--android:layout_marginRight="5dp" />-->
 
     </LinearLayout>
 

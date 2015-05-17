@@ -2,14 +2,12 @@ package tk.order_sys.orderapp;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.os.Handler;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -22,9 +20,8 @@ import tk.order_sys.HTTPRequest.getOrderDetailHttpRequest;
 import tk.order_sys.Interface.CancelOrderHTTPAsyncResponse;
 import tk.order_sys.Interface.HTTPAsyncResponse;
 import tk.order_sys.mapi.models.ContentCart;
-import tk.order_sys.orderapp.Menu.Adapters.MenuCartAdapter;
+import tk.order_sys.orderapp.Dialogs.OrderAppDialog;
 import tk.order_sys.orderapp.Menu.Adapters.OrderDetailAdapter;
-import tk.order_sys.orderapp.XListView.view.XListView;
 
 
 public class OrderDetailActivity extends ActionBarActivity implements HTTPAsyncResponse, CancelOrderHTTPAsyncResponse {
@@ -139,7 +136,40 @@ public class OrderDetailActivity extends ActionBarActivity implements HTTPAsyncR
     @Override
     public void onCancelOrderHTTPAsyncResponse(JSONObject jsonObject) {
         if(jsonObject != null){
-            Toast.makeText(getApplicationContext(), jsonObject.toString(), Toast.LENGTH_SHORT).show();
+            try {
+                if (!jsonObject.isNull("Cookies")) {
+                    JSONArray jsonCookies = new JSONArray(jsonObject.get("Cookies").toString());
+                    jsonCookieStore = jsonCookies;
+                }
+                if(!jsonObject.isNull("error")){
+                    JSONObject jsonError = jsonObject.getJSONObject("error");
+                    String error_code = jsonError.getString("error_code");
+
+                    switch (error_code){
+                        case "1013":
+                            OrderAppDialog.showAlertDialog(getApplicationContext(), "Lỗi", "Không thể hủy đơn hàng.");
+                            break;
+                        case "1011":
+                            OrderAppDialog.showAlertDialog(getApplicationContext(), "Lỗi ", "Không tồn tại đơn hàng.");
+                            break;
+                        default:
+                            OrderAppDialog.showAlertDialog(getApplicationContext(), "Lỗi ", "Có lỗi xãy ra trong qua trình hủy đơn hàng.");
+                    }
+                }else {
+                    Intent callBackData = null;
+                    callBackData = new Intent();
+                    callBackData.putExtra(CALL_BACK_FRAGMET_TAG, 3);
+                    if (jsonCookieStore != null)
+                        callBackData.putExtra(CALL_BACK_COOKIE_STORE_TAG, jsonCookieStore.toString());
+                    setResult(Activity.RESULT_OK, callBackData);
+                    finish();
+                }
+
+            }catch (JSONException e) {
+                e.printStackTrace();
+            } catch (NullPointerException e){
+                e.printStackTrace();
+            }
         }
     }
 }

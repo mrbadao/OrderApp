@@ -163,7 +163,7 @@ public class API {
 
             post_data.put("secret_key", SECRET_KEY);
 
-            StringEntity se = new StringEntity(post_data.toString());
+            StringEntity se = new StringEntity(post_data.toString(), "UTF-8");
             httpPost.setEntity(se);
 
             httpPost.setHeader("Accept", "application/json");
