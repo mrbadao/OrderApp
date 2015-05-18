@@ -230,6 +230,9 @@ public class MenuOrderListFragment extends Fragment implements HTTPAsyncResponse
                        case "1010":
                            OrderAppDialog.showAlertDialog(getActivity(), "Lỗi đặt hàng", "Mặt hàng không phù hợp.");
                            break;
+                       case "1018":
+                           OrderAppDialog.showAlertDialog(getActivity(), "Lỗi đặt hàng", "Vị trí của bạn quá xa chúng tôi không thể giao hàng.");
+                           break;
                        default:
                            OrderAppDialog.showAlertDialog(getActivity(), "Lỗi đặt hàng", "Có lỗi xãy ra trong qua trình đặt hàng.");
                    }
