@@ -20,6 +20,7 @@
             android:name=".MainActivity"
             android:icon="@drawable/app_logo"
             android:label="@string/app_title"
+            android:windowSoftInputMode="adjustPan"
             android:logo="@drawable/app_logo" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -27,9 +28,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <activity
             android:name=".ProductActivity"
             android:label="@string/title_activity_product"
+            android:windowSoftInputMode="adjustPan"
             android:parentActivityName=".MainActivity" >
 
             <!-- Parent activity meta-data to support 4.0 and lower -->
@@ -37,6 +40,7 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".MainActivity" />
         </activity>
+
         <activity
             android:name=".OrderDetailActivity"
             android:label="@string/title_activity_order_detail"
@@ -45,6 +49,7 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".MainActivity" />
         </activity>
+
         <activity
             android:name=".SettingsActivity"
             android:label="@string/title_activity_settings"
@@ -53,6 +58,6 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="tk.order_sys.orderapp.MainActivity" />
         </activity>
-    </application>
 
+    </application>
 </manifest>

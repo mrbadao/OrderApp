@@ -30,26 +30,6 @@
         android:paddingBottom="5dp"
         android:paddingTop="3dp">
 
-        <!--<EditText-->
-            <!--android:hint="Nhập vào tên của bạn"-->
-            <!--android:layout_width="190dp"-->
-            <!--android:layout_height="match_parent"-->
-            <!--android:id="@+id/txtName"-->
-            <!--android:layout_gravity="center|left"-->
-            <!--android:layout_marginLeft="10dp"-->
-            <!--android:layout_marginRight="10dp" />-->
-
-        <!--<EditText-->
-            <!--android:hint="Nhập vào số điện thoại của bạn"-->
-            <!--android:layout_width="270dp"-->
-            <!--android:layout_height="match_parent"-->
-            <!--android:id="@+id/txtPhoneNumber"-->
-            <!--android:inputType="phone"-->
-            <!--android:longClickable="true"-->
-            <!--android:layout_gravity="center|left"-->
-            <!--android:layout_marginLeft="10dp"-->
-            <!--android:layout_marginRight="10dp" />-->
-
         <EditText
             android:hint="Nhập vào địa chỉ của bạn"
             android:layout_width="match_parent"
