@@ -1,6 +1,8 @@
 package tk.order_sys.orderapp.Menu.Adapters;
 
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -66,6 +68,7 @@ public class ProductsAdapter extends ArrayAdapter implements HTTPAsyncResponse {
 
         TextView productName = (TextView) view.findViewById(R.id.txtView_productTitle);
         TextView productPrice = (TextView) view.findViewById(R.id.txtView_productPrice);
+        TextView productOldPrice = (TextView) view.findViewById(R.id.txtView_productSaleOffPrice);
         ImageView productThumbnail = (ImageView) view.findViewById(R.id.productThumbnail);
         TextView productDescription = (TextView) view.findViewById(R.id.txtView_productDescription);
         Button btnAddtoCart = (Button) view.findViewById(R.id.btnAddCart);
@@ -78,7 +81,17 @@ public class ProductsAdapter extends ArrayAdapter implements HTTPAsyncResponse {
 
         productThumbnail.setScaleType(ImageView.ScaleType.FIT_CENTER);
         productName.setText((CharSequence) item.name);
-        productPrice.setText((CharSequence) "Giá: " + String.format("%,d", Long.valueOf(item.price)) + " đồng");
+
+        if(item.saleoff_price !=null && !item.saleoff_price.isEmpty()){
+            productPrice.setText((CharSequence) "Giá: " + String.format("%,d", Long.valueOf(item.saleoff_price)) + " đồng");
+            productPrice.setTextColor(Color.rgb(0,0,0));
+            productPrice.setPaintFlags(productOldPrice.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+
+            productOldPrice.setText((CharSequence) "Giảm "+item.saleoff_percent +"% chỉ còn: " + String.format("%,d", Long.valueOf(item.price)) + " đồng");
+        }else{
+            productPrice.setText((CharSequence) "Giá: " + String.format("%,d", Long.valueOf(item.price)) + " đồng");
+        }
+
         productDescription.setText((CharSequence) item.description);
 
         btnAddtoCart.setOnClickListener(new View.OnClickListener() {

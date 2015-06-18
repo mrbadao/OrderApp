@@ -116,7 +116,7 @@
             android:id="@+id/btnEditItemCart"
             android:textSize="10dp"
             android:textAlignment="gravity"
-            android:text="Sữa"
+            android:text="Sửa"
             android:paddingLeft="10dp"
             android:layout_marginLeft="3dp" />
 

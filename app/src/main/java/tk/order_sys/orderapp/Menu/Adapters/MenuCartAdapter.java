@@ -1,12 +1,15 @@
 package tk.order_sys.orderapp.Menu.Adapters;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -60,6 +63,14 @@ public class MenuCartAdapter extends ArrayAdapter {
         itemPrice.setText((CharSequence) String.format("%,d", Long.valueOf(cartItem.price)) + " đồng");
         itemTotal.setText((CharSequence) String.format("%,d", Long.valueOf(cartItem.price) * Long.valueOf(cartItem.qty)) + " đồng");            itemQuanty.setText((CharSequence) cartItem.qty);
 
+        Button btnEditItemCart = (Button) view.findViewById(R.id.btnEditItemCart);
+
+        btnEditItemCart.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.i("MENU","Order list btn click");
+            }
+        });
 
         return view;
     }

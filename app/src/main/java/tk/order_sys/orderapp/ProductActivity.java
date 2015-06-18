@@ -153,6 +153,8 @@ public class ProductActivity extends ActionBarActivity implements HTTPAsyncRespo
                             jsonArrProduct.getString("thumbnail"),
                             jsonArrProduct.getString("description"),
                             jsonArrProduct.getString("price"),
+                            jsonArrProduct.getString("saleoff_price"),
+                            jsonArrProduct.getString("saleoff_percent"),
                             jsonArrProduct.getString("category_id"),
                             jsonArrProduct.getString("created"),
                             jsonArrProduct.getString("modified")
