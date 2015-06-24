@@ -61,7 +61,8 @@ public class MenuCartAdapter extends ArrayAdapter {
 
         itemTitle.setText((CharSequence) cartItem.name);
         itemPrice.setText((CharSequence) String.format("%,d", Long.valueOf(cartItem.price)) + " đồng");
-        itemTotal.setText((CharSequence) String.format("%,d", Long.valueOf(cartItem.price) * Long.valueOf(cartItem.qty)) + " đồng");            itemQuanty.setText((CharSequence) cartItem.qty);
+        itemTotal.setText((CharSequence) String.format("%,d", Long.valueOf(cartItem.price) * Long.valueOf(cartItem.qty)) + " đồng");
+        itemQuanty.setText((CharSequence) cartItem.qty);
 
         Button btnEditItemCart = (Button) view.findViewById(R.id.btnEditItemCart);
         Log.i("MENU","1k" + position);
