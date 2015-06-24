@@ -8,8 +8,8 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -57,18 +57,28 @@ public class MenuCartAdapter extends ArrayAdapter {
         TextView itemTotal = (TextView) view.findViewById(R.id.txtView_product_total);
         EditText itemQuanty = (EditText) view.findViewById(R.id.txtEdit_productQuanty);
 
-        ContentCart cartItem = (ContentCart) getItem(position);
+        final ContentCart cartItem = (ContentCart) getItem(position);
 
         itemTitle.setText((CharSequence) cartItem.name);
         itemPrice.setText((CharSequence) String.format("%,d", Long.valueOf(cartItem.price)) + " đồng");
         itemTotal.setText((CharSequence) String.format("%,d", Long.valueOf(cartItem.price) * Long.valueOf(cartItem.qty)) + " đồng");            itemQuanty.setText((CharSequence) cartItem.qty);
 
         Button btnEditItemCart = (Button) view.findViewById(R.id.btnEditItemCart);
+        Log.i("MENU","1k" + position);
+        btnEditItemCart.setTag(position);
 
         btnEditItemCart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.i("MENU","Order list btn click");
+                int which = -1;
+                LinearLayout p = (LinearLayout) v.getParent();
+                EditText itemQuanty = (EditText) p.findViewById(R.id.txtEdit_productQuanty);
+                Object obj = v.getTag();
+                which = ((Integer) obj).intValue();
+                if(which > -1){
+                    cartItems.get(which).qty = itemQuanty.getText().toString();
+                }
+                Log.i("MENU", "Order list btn click" + which);
             }
         });
 

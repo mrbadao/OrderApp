@@ -189,7 +189,15 @@ public class MenuOrderListFragment extends Fragment implements HTTPAsyncResponse
                 }
                 else if( !Name.isEmpty() && !Email.isEmpty() && !Phone.isEmpty() && !Address.isEmpty()){
                     JSONObject checkoutParams = new JSONObject();
+                    JSONArray checkoutCart = new JSONArray();
+
                     try {
+                        String strCart = "";
+                        for(int i=0; i< listCartItem.size(); i++){
+                            checkoutCart.put(listCartItem.get(i).toJSONObj());
+                        }
+
+                        checkoutParams.put("cart", checkoutCart);
                         checkoutParams.put("name", Name);
                         checkoutParams.put("email", Email);
                         checkoutParams.put("phone", Phone);
@@ -198,6 +206,7 @@ public class MenuOrderListFragment extends Fragment implements HTTPAsyncResponse
                         checkoutParams.put("coordinate_lat", String.valueOf(mCurrentLocation.getLatitude()));
 
                         Log.i("PARAMS", checkoutParams.toString());
+                        Log.i("PARAMS", jsonCookieStore.toString());
 
                         new checkoutCartHttpRequest(getActivity(), jsonCookieStore, this).execute(checkoutParams);
                     } catch (JSONException e) {
@@ -290,5 +299,12 @@ public class MenuOrderListFragment extends Fragment implements HTTPAsyncResponse
         if (mProvider.isEmpty() || mProvider == null)
             Toast.makeText(getActivity().getApplicationContext(), "Dịch vụ định vị không hoạt động", Toast.LENGTH_SHORT).show();
         locationManager.requestLocationUpdates(mProvider, 0, 0, this);
+    }
+
+    public void EditCartItem(View view) {
+
+
+        Toast.makeText(getActivity().getApplicationContext(),"Calling your buddy 1.", Toast.LENGTH_SHORT).show();
+
     }
 }

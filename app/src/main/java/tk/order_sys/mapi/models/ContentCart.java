@@ -3,6 +3,9 @@ package tk.order_sys.mapi.models;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 /**
  * Created by HieuNguyen on 4/7/2015.
  */
@@ -31,5 +34,16 @@ public class ContentCart implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
 
+    }
+
+    public JSONObject toJSONObj() {
+        JSONObject json = new JSONObject();
+        try {
+            json.put("id",this.id);
+            json.put("qty",this.qty);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return json;
     }
 }
