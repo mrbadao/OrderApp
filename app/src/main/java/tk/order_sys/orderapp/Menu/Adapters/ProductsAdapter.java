@@ -83,11 +83,11 @@ public class ProductsAdapter extends ArrayAdapter implements HTTPAsyncResponse {
         productName.setText((CharSequence) item.name);
 
         if(item.saleoff_price !=null && !item.saleoff_price.isEmpty()){
-            productPrice.setText((CharSequence) "Giá: " + String.format("%,d", Long.valueOf(item.saleoff_price)) + " đồng");
+            productPrice.setText((CharSequence) "Giá: " + String.format("%,d", Long.valueOf(item.price)) + " đồng");
             productPrice.setTextColor(Color.rgb(0,0,0));
             productPrice.setPaintFlags(productOldPrice.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
 
-            productOldPrice.setText((CharSequence) "Giảm "+item.saleoff_percent +"% chỉ còn: " + String.format("%,d", Long.valueOf(item.price)) + " đồng");
+            productOldPrice.setText((CharSequence) "Giảm "+item.saleoff_percent +"% chỉ còn: " + String.format("%,d", Long.valueOf(item.saleoff_price)) + " đồng");
         }else{
             productPrice.setText((CharSequence) "Giá: " + String.format("%,d", Long.valueOf(item.price)) + " đồng");
         }
