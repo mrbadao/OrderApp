@@ -74,10 +74,12 @@ public class MenuCartAdapter extends ArrayAdapter {
                 int which = -1;
                 LinearLayout p = (LinearLayout) v.getParent();
                 EditText itemQuanty = (EditText) p.findViewById(R.id.txtEdit_productQuanty);
+                TextView itemTotal = (TextView) p.findViewById(R.id.txtView_product_total);
                 Object obj = v.getTag();
                 which = ((Integer) obj).intValue();
                 if(which > -1){
                     cartItems.get(which).qty = itemQuanty.getText().toString();
+                    itemTotal.setText((CharSequence) String.format("%,d", Long.valueOf(cartItem.price) * Long.valueOf(cartItem.qty)) + " đồng");
                 }
                 Log.i("MENU", "Order list btn click" + which);
             }
