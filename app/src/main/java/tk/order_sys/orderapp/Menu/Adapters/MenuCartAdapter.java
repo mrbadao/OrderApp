@@ -65,7 +65,6 @@ public class MenuCartAdapter extends ArrayAdapter {
         itemQuanty.setText((CharSequence) cartItem.qty);
 
         Button btnEditItemCart = (Button) view.findViewById(R.id.btnEditItemCart);
-        Log.i("MENU","1k" + position);
         btnEditItemCart.setTag(position);
 
         btnEditItemCart.setOnClickListener(new View.OnClickListener() {
@@ -79,7 +78,7 @@ public class MenuCartAdapter extends ArrayAdapter {
                 which = ((Integer) obj).intValue();
                 if(which > -1){
                     cartItems.get(which).qty = itemQuanty.getText().toString();
-                    itemTotal.setText((CharSequence) String.format("%,d", Long.valueOf(cartItem.price) * Long.valueOf(cartItem.qty)) + " đồng");
+                    itemTotal.setText((CharSequence) String.format("%,d", Long.valueOf(cartItems.get(which).price) * Long.valueOf(cartItems.get(which).qty)) + " đồng");
                 }
                 Log.i("MENU", "Order list btn click" + which);
             }
